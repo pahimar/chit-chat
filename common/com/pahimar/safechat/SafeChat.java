@@ -1,6 +1,8 @@
 package com.pahimar.safechat;
 
 import com.pahimar.safechat.chat.ChatListener;
+import com.pahimar.safechat.command.CommandHandler;
+import com.pahimar.safechat.helper.LogHelper;
 import com.pahimar.safechat.lib.Reference;
 
 import cpw.mods.fml.common.Mod;
@@ -22,15 +24,34 @@ public class SafeChat {
     @EventHandler
     public void invalidFingerprint(FMLFingerprintViolationEvent event) {
         
+        if (Reference.FINGERPRINT.equals("@FINGERPRINT@")) {
+            LogHelper.warning("The copy of SafeChat that you are running is a development version of the mod, and as such may be unstable and/or incomplete.");
+        }
+        else {
+            LogHelper.severe("The copy of SafeChat that you are running has been modified from the original, and unpredictable things may happen. Please consider re-downloading the original version of the mod.");
+        }
     }
     
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         
+        CommandHandler.initCommands(event);
     }
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        
+        // Initialize the log helper
+        LogHelper.init();
+        
+        // TODO Initialize the configuration 
+        //ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.CHANNEL_NAME.toLowerCase() + File.separator);
+
+        // TODO Conduct the version check and log the result
+        //VersionHelper.execute();
+        
+        // TODO Read in the blacklist from file
+        
         NetworkRegistry.instance().registerChatListener(new ChatListener());
     }
 }
