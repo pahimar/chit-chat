@@ -2,7 +2,15 @@ package com.pahimar.safechat.configuration;
 
 import com.pahimar.safechat.lib.Reference;
 
-
+/**
+ * SafeChat
+ * 
+ * Settings
+ * 
+ * @author pahimar
+ * @license GNU Public License v3 (http://www.gnu.org/licenses/gpl.html)
+ * 
+ */
 public class Settings {
 
     /*

@@ -2,6 +2,7 @@ package com.pahimar.safechat;
 
 import java.io.File;
 
+import com.pahimar.safechat.blacklist.BlackList;
 import com.pahimar.safechat.chat.ChatListener;
 import com.pahimar.safechat.command.CommandHandler;
 import com.pahimar.safechat.configuration.ConfigurationHandler;
@@ -17,6 +18,15 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
+/**
+ * SafeChat
+ * 
+ * SafeChat
+ * 
+ * @author pahimar
+ * @license GNU Public License v3 (http://www.gnu.org/licenses/gpl.html)
+ * 
+ */
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER, certificateFingerprint = Reference.FINGERPRINT)
 @NetworkMod(clientSideRequired = false, serverSideRequired = false)
 public class SafeChat {
@@ -51,6 +61,9 @@ public class SafeChat {
         ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
         
         // TODO Read in the blacklist from file
+        for (String string : BlackList.getBlackList()) {
+            LogHelper.debug(string);
+        }
         
         NetworkRegistry.instance().registerChatListener(new ChatListener());
     }

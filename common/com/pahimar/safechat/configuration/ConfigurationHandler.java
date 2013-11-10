@@ -11,6 +11,15 @@ import com.pahimar.safechat.lib.Reference;
 
 import cpw.mods.fml.common.FMLLog;
 
+/**
+ * SafeChat
+ * 
+ * ConfigurationHandler
+ * 
+ * @author pahimar
+ * @license GNU Public License v3 (http://www.gnu.org/licenses/gpl.html)
+ * 
+ */
 public class ConfigurationHandler {
 
     private static Configuration configuration;
