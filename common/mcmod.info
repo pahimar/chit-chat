@@ -1,0 +1,20 @@
+[
+{
+  "modid": "SafeChat",
+  "name": "Safe Chat",
+  "description": "",
+  "version": "@VERSION@",
+  "url": "",
+  "updateUrl": "",
+  "authorList": [
+    "pahimar"
+  ],
+  "credits": "",
+  "logoFile": "/assets/safechat/textures/logo/logo.png",
+  "screenshots": [
+  ],
+  "parent":"",
+  "dependencies": [
+  ]
+}
+]

@@ -1,7 +1,10 @@
 package com.pahimar.safechat;
 
+import java.io.File;
+
 import com.pahimar.safechat.chat.ChatListener;
 import com.pahimar.safechat.command.CommandHandler;
+import com.pahimar.safechat.configuration.ConfigurationHandler;
 import com.pahimar.safechat.helper.LogHelper;
 import com.pahimar.safechat.lib.Reference;
 
@@ -14,7 +17,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER, dependencies = Reference.DEPENDENCIES, certificateFingerprint = Reference.FINGERPRINT)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER, certificateFingerprint = Reference.FINGERPRINT)
 @NetworkMod(clientSideRequired = false, serverSideRequired = false)
 public class SafeChat {
     
@@ -44,11 +47,8 @@ public class SafeChat {
         // Initialize the log helper
         LogHelper.init();
         
-        // TODO Initialize the configuration 
-        //ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.CHANNEL_NAME.toLowerCase() + File.separator);
-
-        // TODO Conduct the version check and log the result
-        //VersionHelper.execute();
+        // Initialize the configuration 
+        ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
         
         // TODO Read in the blacklist from file
         
