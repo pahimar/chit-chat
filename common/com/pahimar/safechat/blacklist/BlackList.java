@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import com.pahimar.safechat.lib.Reference;
 
 /**
  * SafeChat
@@ -39,7 +40,7 @@ public class BlackList {
         }
         
         try {
-            InputStream inputStream = BlackList.class.getClass().getResourceAsStream("/assets/safechat/lang/defaultCurseBlackList.lang");
+            InputStream inputStream = BlackList.class.getClass().getResourceAsStream(Reference.DEFAULT_BLACKLIST_FILE_LOCATION);
             
             if (inputStream != null) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
