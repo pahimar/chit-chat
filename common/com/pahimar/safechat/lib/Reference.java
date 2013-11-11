@@ -23,8 +23,9 @@ public class Reference {
     
     /* Filter mode related constants */
     public static final int FILTER_MODE_NONE = 0;
-    public static final int FILTER_MODE_REPLACE = 1;
-    public static final int FILTER_MODE_HIDE = 2;
+    public static final int FILTER_MODE_WORD_CENSOR = 1;
+    public static final int FILTER_MODE_LINE_CENSOR = 2;
+    public static final int FILTER_MODE_HIDE = 3;
     
     /* Action related constants */
     public static final int ACTION_NOTHING = 0;

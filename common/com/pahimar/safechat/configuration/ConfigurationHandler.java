@@ -26,6 +26,7 @@ public class ConfigurationHandler {
     private static Configuration configuration;
     
     private static final String CATEGORY_STRIKE_SYSTEM = "strike_system";
+    private static final String CATEGORY_STRIKE_SYSTEM_COMMENT = "Settings related to the Strikes sytem. These settings are server-only.";
 
     public static void init(String configPath) {
 
@@ -38,6 +39,8 @@ public class ConfigurationHandler {
 
             Settings.STRIKE_SYSTEM_ENABLED = configuration.get(CATEGORY_GENERAL, Settings.STRIKE_SYSTEM_ENABLED_CONFIGNAME, "" + Settings.STRIKE_SYSTEM_ENABLED_DEFAULT, Settings.STRIKE_SYSTEM_ENABLED_COMMENT, Property.Type.BOOLEAN).getBoolean(Settings.STRIKE_SYSTEM_ENABLED_DEFAULT);
 
+            configuration.addCustomCategoryComment(CATEGORY_STRIKE_SYSTEM, CATEGORY_STRIKE_SYSTEM_COMMENT);
+            
             Settings.STRIKE_EXPIRATION_TIME = configuration.get(CATEGORY_STRIKE_SYSTEM, Settings.STRIKE_EXPIRATION_TIME_CONFIGNAME, "" + Settings.STRIKE_EXPIRATION_TIME_DEFAULT, Settings.STRIKE_EXPIRATION_TIME_COMMENT, Property.Type.INTEGER).getInt(Settings.STRIKE_EXPIRATION_TIME_DEFAULT);
             
             Settings.MAX_STRIKES_ALLOWED = configuration.get(CATEGORY_STRIKE_SYSTEM, Settings.MAX_STRIKES_ALLOWED_CONFIGNAME, "" + Settings.MAX_STRIKES_ALLOWED_DEFAULT, Settings.MAX_STRIKES_ALLOWED_COMMENT, Property.Type.INTEGER).getInt(Settings.MAX_STRIKES_ALLOWED_DEFAULT);

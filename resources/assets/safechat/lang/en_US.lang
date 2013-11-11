@@ -1,0 +1,5 @@
+safechat:line_removed=[Message removed by SafeChat]
+safechat:line_removed_strike=[Message removed by SafeChat. Strike %s of %s!]
+
+safechat:strikeout.action_with_duration=[SafeChat: Player '%s' has struck out! %s for %s seconds]
+safechat:strikeout.action_no_duration=[SafeChat: Player '%s' has struck out! %s]

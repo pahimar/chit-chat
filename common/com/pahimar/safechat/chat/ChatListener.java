@@ -2,13 +2,17 @@ package com.pahimar.safechat.chat;
 
 import java.util.Iterator;
 
+import net.minecraft.network.packet.NetHandler;
+import net.minecraft.network.packet.Packet3Chat;
+import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.StatCollector;
+
 import com.pahimar.safechat.blacklist.BlackList;
 import com.pahimar.safechat.configuration.Settings;
 import com.pahimar.safechat.helper.LogHelper;
 import com.pahimar.safechat.lib.Reference;
+import com.pahimar.safechat.lib.Strings;
 
-import net.minecraft.network.packet.NetHandler;
-import net.minecraft.network.packet.Packet3Chat;
 import cpw.mods.fml.common.network.IChatListener;
 
 /**
@@ -35,10 +39,10 @@ public class ChatListener implements IChatListener {
             if (message.message.startsWith("/msg") || message.message.startsWith("/me") || !message.message.startsWith("/")) {
                 LogHelper.debug("Server received a chat message that could be filtered message");
                 
-                if (Settings.FILTER_MODE == Reference.FILTER_MODE_REPLACE) {
-                    
+                if (Settings.FILTER_MODE == Reference.FILTER_MODE_WORD_CENSOR) {
+                    // TODO Only filter out the censored word
                 }
-                else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE) {
+                else if (Settings.FILTER_MODE == Reference.FILTER_MODE_LINE_CENSOR) {
                     
                     boolean blackListWordFound = false;
                     String messageLowerCase = message.message.toLowerCase();
@@ -53,10 +57,20 @@ public class ChatListener implements IChatListener {
                     }
                     
                     if (blackListWordFound) {
-                        message.message = "[Message removed by SafeChat]";
+                        if (Settings.STRIKE_SYSTEM_ENABLED) {
+                            // TODO Handle whether this is a strikeout, or just a strike
+                            message = new Packet3Chat(new ChatMessageComponent().addText(StatCollector.translateToLocal(Strings.LINE_REMOVED_WITH_STRIKE)).setItalic(true));
+                        }
+                        else {
+                            message = new Packet3Chat(new ChatMessageComponent().addText(StatCollector.translateToLocal(Strings.LINE_REMOVED)).setItalic(true));
+                        }
                         return message;
                     }
                 }
+                else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE) {
+                    // TODO This is waiting on FML update, but don't send the message at all
+                }
+                // TODO if any of the filters trips, tell the offending user what word they said that's not allowed
             }
         }
         return message;

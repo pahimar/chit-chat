@@ -18,7 +18,7 @@ public class Settings {
      */
     public static int FILTER_MODE;
     public static final String FILTER_MODE_CONFIGNAME = "filter_mode";
-    public static final int FILTER_MODE_DEFAULT = Reference.FILTER_MODE_REPLACE;
+    public static final int FILTER_MODE_DEFAULT = Reference.FILTER_MODE_LINE_CENSOR;
     public static final String FILTER_MODE_COMMENT = "Sets the filtering mode for SafeChat (default is 1):\n0 - No filtering\n1 - Replacement (black listed words are replaced with ***)\n2 - Hidden (chat messages containing black listed words do not appear)";
     
     /*
