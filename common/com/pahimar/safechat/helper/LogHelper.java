@@ -18,16 +18,16 @@ import cpw.mods.fml.common.FMLLog;
  */
 public class LogHelper {
 
-    private static Logger eeLogger = Logger.getLogger(Reference.MOD_ID);
+    private static Logger logger = Logger.getLogger(Reference.MOD_ID);
 
     public static void init() {
 
-        eeLogger.setParent(FMLLog.getLogger());
+        logger.setParent(FMLLog.getLogger());
     }
 
     public static void log(Level logLevel, Object object) {
 
-        eeLogger.log(logLevel, object.toString());
+        logger.log(logLevel, object.toString());
     }
 
     public static void severe(Object object) {

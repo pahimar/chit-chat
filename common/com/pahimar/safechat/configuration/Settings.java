@@ -34,21 +34,21 @@ public class Settings {
     public static final int MAX_STRIKES_ALLOWED_DEFAULT = 3;
     public static final String MAX_STRIKES_ALLOWED_COMMENT = "Maximum number of strikes a player is allowed at one time (default is 3)";
     
-    public static int STRIKE_TIME_TO_EXPIRATION;
-    public static final String STRIKE_TIME_TO_EXPIRATION_CONFIGNAME = "time_to_strike_expiration";
-    public static final int STRIKE_TIME_TO_EXPIRATION_DEFAULT = 60;
-    public static final String STRIKE_TIME_TO_EXPIRATION_COMMENT = "How long, in seconds, a strike will stay on a player until the strike is removed (default is 60)";
+    public static int STRIKE_EXPIRATION_TIME;
+    public static final String STRIKE_EXPIRATION_TIME_CONFIGNAME = "time_to_strike_expiration";
+    public static final int STRIKE_EXPIRATION_TIME_DEFAULT = 60;
+    public static final String STRIKE_EXPIRATION_TIME_COMMENT = "How long, in seconds, a strike will stay on a player until the strike is removed (default is 60)";
     
     /*
      * Exceeded Strikes Action
      */
-    public static int EXCEEDS_MAX_STRIKES_ACTION;
-    public static final String EXCEEDS_MAX_STRIKES_ACTION_CONFIGNAME = "exceeds_max_strikes_action";
-    public static final int EXCEEDS_MAX_STRIKES_ACTION_DEFAULT = Reference.ACTION_DISABLE_CHAT;
-    public static final String EXCEEDS_MAX_STRIKES_ACTION_COMMENT = "Sets the action for when a player exceeds the max number of allowed strikes (default is 2):\n0 - Nothing\n1 - Kick\n2 - Disables sending of chat messages (for the specified duration)\n3 - Time out (kicks the player and does not allow rejoin until for the specified duration\n4 - Ban (player is removed from the server and placed on the server's player blacklist)";
+    public static int STRIKEOUT_ACTION;
+    public static final String STRIKEOUT_ACTION_CONFIGNAME = "strikeout_action";
+    public static final int STRIKEOUT_ACTION_DEFAULT = Reference.ACTION_DISABLE_CHAT;
+    public static final String STRIKEOUT_ACTION_COMMENT = "Sets the action for when a player exceeds the max number of allowed strikes (default is 2):\n0 - Nothing\n1 - Kick\n2 - Disables sending of chat messages (for the specified duration)\n3 - Time out (kicks the player and does not allow rejoin until for the specified duration\n4 - Ban (player is removed from the server and placed on the server's player blacklist)";
     
-    public static int EXCEEDS_MAX_STRIKES_ACTION_DURATION;
-    public static final String EXCEEDS_MAX_STRIKES_ACTION_DURATION_CONFIGNAME = "exceeds_max_strikes_action_duration";
-    public static final int EXCEEDS_MAX_STRIKES_ACTION_DURATION_DEFAULT = 60;
-    public static final String EXCEEDS_MAX_STRIKES_ACTION_DURATION_COMMENT = "How long the action lasts for when a player exceeds the max number of allowed strikes, in seconds (default is 60)";
+    public static int STRIKEOUT_ACTION_DURATION;
+    public static final String STRIKEOUT_ACTION_DURATION_CONFIGNAME = "exceeds_max_strikes_action_duration";
+    public static final int STRIKEOUT_ACTION_DURATION_DEFAULT = 60;
+    public static final String STRIKEOUT_ACTION_DURATION_COMMENT = "How long the action lasts for when a player exceeds the max number of allowed strikes, in seconds (default is 60)";
 }
