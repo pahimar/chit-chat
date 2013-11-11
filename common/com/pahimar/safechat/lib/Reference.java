@@ -25,4 +25,11 @@ public class Reference {
     public static final int FILTER_MODE_NONE = 0;
     public static final int FILTER_MODE_REPLACE = 1;
     public static final int FILTER_MODE_HIDE = 2;
+    
+    /* Action related constants */
+    public static final int ACTION_NOTHING = 0;
+    public static final int ACTION_KICK = 1;
+    public static final int ACTION_DISABLE_CHAT = 2;
+    public static final int ACTION_TIME_OUT = 3;
+    public static final int ACTION_BAN = 4;
 }
