@@ -17,6 +17,9 @@ public class Reference {
     public static final String VERSION_NUMBER = "@VERSION@ (build @BUILD_NUMBER@)";
     public static final String FINGERPRINT = "@FINGERPRINT@";
     
+    /* Misc constants */
+    public static final int MIN_FML_BUILD_NUMBER = 949;
+    
     /* Locations of the blacklists */
     public static final String DEFAULT_BLACKLIST_FILE_LOCATION = "/assets/safechat/lang/defaultCurseBlackList.lang";
     public static final String CONFIG_BLACKLIST_FILE_LOCATION = "";

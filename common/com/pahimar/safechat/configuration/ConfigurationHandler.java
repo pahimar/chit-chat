@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import com.pahimar.safechat.helper.GeneralHelper;
 import com.pahimar.safechat.lib.Reference;
 
 import cpw.mods.fml.common.FMLLog;
@@ -48,6 +49,8 @@ public class ConfigurationHandler {
             Settings.STRIKEOUT_ACTION = configuration.get(CATEGORY_STRIKE_SYSTEM, Settings.STRIKEOUT_ACTION_CONFIGNAME, "" + Settings.STRIKEOUT_ACTION_DEFAULT, Settings.STRIKEOUT_ACTION_COMMENT, Property.Type.INTEGER).getInt(Settings.STRIKEOUT_ACTION_DEFAULT);
 
             Settings.STRIKEOUT_ACTION_DURATION = configuration.get(CATEGORY_STRIKE_SYSTEM, Settings.STRIKEOUT_ACTION_DURATION_CONFIGNAME, "" + Settings.STRIKEOUT_ACTION_DURATION_DEFAULT, Settings.STRIKEOUT_ACTION_DURATION_COMMENT, Property.Type.INTEGER).getInt(Settings.STRIKEOUT_ACTION_DURATION_DEFAULT);
+            
+            Settings.FML_CAN_CANCEL_MESSAGES = GeneralHelper.canFMLCancelChatMessages();
         }
         catch (Exception e) {
             FMLLog.log(Level.SEVERE, e, Reference.MOD_NAME + " has had a problem loading its general configuration");
