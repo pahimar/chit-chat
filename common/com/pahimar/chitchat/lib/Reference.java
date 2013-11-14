@@ -18,7 +18,7 @@ public class Reference {
     public static final String FINGERPRINT = "@FINGERPRINT@";
     
     /* Misc constants */
-    public static final int MIN_FML_BUILD_NUMBER = 951;
+    public static final int MIN_FML_BUILD_NUMBER = 952;
     
     /* Locations of the blacklists */
     public static final String DEFAULT_BLACKLIST_FILE_LOCATION = "/assets/chitchat/lang/defaultCurseBlackList.lang";
