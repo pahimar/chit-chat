@@ -1,6 +1,6 @@
-package com.pahimar.safechat.helper;
+package com.pahimar.chitchat.helper;
 
-import com.pahimar.safechat.lib.Reference;
+import com.pahimar.chitchat.lib.Reference;
 
 import cpw.mods.fml.common.Loader;
 

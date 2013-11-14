@@ -1,4 +1,4 @@
-package com.pahimar.safechat.blacklist;
+package com.pahimar.chitchat.blacklist;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import com.pahimar.safechat.lib.Reference;
+import com.pahimar.chitchat.lib.Reference;
 
 /**
- * SafeChat
+ * ChitChat
  * 
  * BlackList
  * 

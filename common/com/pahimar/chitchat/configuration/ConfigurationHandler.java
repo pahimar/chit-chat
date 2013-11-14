@@ -1,4 +1,4 @@
-package com.pahimar.safechat.configuration;
+package com.pahimar.chitchat.configuration;
 
 import static net.minecraftforge.common.Configuration.CATEGORY_GENERAL;
 
@@ -8,13 +8,13 @@ import java.util.logging.Level;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
-import com.pahimar.safechat.helper.GeneralHelper;
-import com.pahimar.safechat.lib.Reference;
+import com.pahimar.chitchat.helper.GeneralHelper;
+import com.pahimar.chitchat.lib.Reference;
 
 import cpw.mods.fml.common.FMLLog;
 
 /**
- * SafeChat
+ * ChitChat
  * 
  * ConfigurationHandler
  * 

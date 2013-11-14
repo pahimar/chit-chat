@@ -1,9 +1,9 @@
-package com.pahimar.safechat.command;
+package com.pahimar.chitchat.command;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /**
- * SafeChat
+ * ChitChat
  * 
  * CommandHandler
  * 

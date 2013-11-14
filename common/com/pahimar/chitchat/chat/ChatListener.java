@@ -1,17 +1,17 @@
-package com.pahimar.safechat.chat;
+package com.pahimar.chitchat.chat;
 
 import net.minecraft.network.packet.NetHandler;
 import net.minecraft.network.packet.Packet3Chat;
 
-import com.pahimar.safechat.configuration.Settings;
-import com.pahimar.safechat.helper.BlackListHelper;
-import com.pahimar.safechat.helper.LogHelper;
-import com.pahimar.safechat.lib.Reference;
+import com.pahimar.chitchat.configuration.Settings;
+import com.pahimar.chitchat.helper.BlackListHelper;
+import com.pahimar.chitchat.helper.LogHelper;
+import com.pahimar.chitchat.lib.Reference;
 
 import cpw.mods.fml.common.network.IChatListener;
 
 /**
- * SafeChat
+ * ChitChat
  * 
  * ChatListener
  * 

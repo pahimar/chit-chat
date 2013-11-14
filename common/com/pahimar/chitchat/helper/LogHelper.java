@@ -1,14 +1,14 @@
-package com.pahimar.safechat.helper;
+package com.pahimar.chitchat.helper;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.pahimar.safechat.lib.Reference;
+import com.pahimar.chitchat.lib.Reference;
 
 import cpw.mods.fml.common.FMLLog;
 
 /**
- * SafeChat
+ * ChitChat
  * 
  * LogHelper
  * 

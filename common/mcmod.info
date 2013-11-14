@@ -1,7 +1,7 @@
 [
 {
-  "modid": "SafeChat",
-  "name": "Safe Chat",
+  "modid": "ChitChat",
+  "name": "Chit Chat",
   "description": "",
   "version": "@VERSION@",
   "url": "",
@@ -10,7 +10,7 @@
     "pahimar"
   ],
   "credits": "",
-  "logoFile": "/assets/safechat/textures/logo/logo.png",
+  "logoFile": "/assets/chitchat/textures/logo/logo.png",
   "screenshots": [
   ],
   "parent":"",

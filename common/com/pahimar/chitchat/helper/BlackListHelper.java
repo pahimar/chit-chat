@@ -1,4 +1,4 @@
-package com.pahimar.safechat.helper;
+package com.pahimar.chitchat.helper;
 
 public class BlackListHelper {
 

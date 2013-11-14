@@ -1,7 +1,7 @@
-package com.pahimar.safechat.lib;
+package com.pahimar.chitchat.lib;
 
 /**
- * SafeChat
+ * ChitChat
  * 
  * Reference
  * 
@@ -12,16 +12,16 @@ package com.pahimar.safechat.lib;
 public class Reference {
 
     /* General @Mod related constants */
-    public static final String MOD_ID = "SafeChat";
-    public static final String MOD_NAME = "SafeChat";
+    public static final String MOD_ID = "ChitChat";
+    public static final String MOD_NAME = "ChitChat";
     public static final String VERSION_NUMBER = "@VERSION@ (build @BUILD_NUMBER@)";
     public static final String FINGERPRINT = "@FINGERPRINT@";
     
     /* Misc constants */
-    public static final int MIN_FML_BUILD_NUMBER = 949;
+    public static final int MIN_FML_BUILD_NUMBER = 951;
     
     /* Locations of the blacklists */
-    public static final String DEFAULT_BLACKLIST_FILE_LOCATION = "/assets/safechat/lang/defaultCurseBlackList.lang";
+    public static final String DEFAULT_BLACKLIST_FILE_LOCATION = "/assets/chitchat/lang/defaultCurseBlackList.lang";
     public static final String CONFIG_BLACKLIST_FILE_LOCATION = "";
     
     /* Filter mode related constants */
