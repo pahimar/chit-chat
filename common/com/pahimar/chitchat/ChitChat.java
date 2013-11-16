@@ -1,13 +1,10 @@
 package com.pahimar.chitchat;
 
 import java.io.File;
-import java.util.regex.Pattern;
 
-import com.pahimar.chitchat.blacklist.BannedWord;
 import com.pahimar.chitchat.chat.ChatListener;
 import com.pahimar.chitchat.command.CommandHandler;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
-import com.pahimar.chitchat.helper.BannedWordHelper;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
 

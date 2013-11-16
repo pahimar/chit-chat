@@ -13,7 +13,7 @@ public class BannedWord {
     private Pattern bannedPattern;
     
     public BannedWord(String bannedWord) {
-        this(bannedWord, false, false);
+        this(bannedWord, true, true);
     }
     
     public BannedWord(String bannedText, boolean mustStartWith, boolean mustEndWith) {

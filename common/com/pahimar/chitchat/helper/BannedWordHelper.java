@@ -1,5 +1,9 @@
 package com.pahimar.chitchat.helper;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,9 +15,15 @@ public class BannedWordHelper {
     
     private static String regexSpecialCharacters = "\\^$.|?*+()[{";
 
+    private static Map<String, List<String>> equivalentCharacters = new HashMap<String, List<String>>();
+    
     public static boolean findBannedWords(String line) {
 
         return true;
+    }
+    
+    public static Pattern generatePatternFromBannedWord(String bannedWord) {
+        return generatePatternFromBannedWord(new BannedWord(bannedWord));
     }
     
     public static Pattern generatePatternFromBannedWord(BannedWord bannedWord) {
@@ -49,7 +59,27 @@ public class BannedWordHelper {
                     }
                     // Else the character is a character that doesn't require special escapes, so add it with a one or more modifier
                     else {
-                        regexStringBuilder.append(String.format("(%s+)", character));
+                        if (equivalentCharacters.get(character) != null) {
+                            
+                            regexStringBuilder.append(String.format("(%s+", character));
+                            
+                            List<String> otherCharacters = equivalentCharacters.get(character);
+                            
+                            for (String otherCharacter : otherCharacters) {
+                                if (regexSpecialCharacters.contains(otherCharacter)) {
+                                    regexStringBuilder.append(String.format("|\\%s+", otherCharacter));
+                                }
+                                else {
+                                    regexStringBuilder.append(String.format("|%s+", otherCharacter));
+                                }
+                            }
+                            
+                            regexStringBuilder.append(String.format(")", character));
+                            
+                        }
+                        else {
+                            regexStringBuilder.append(String.format("(%s+)", character));
+                        }
                     }
                 }
                 
@@ -63,5 +93,37 @@ public class BannedWordHelper {
         }
         
         return null;
+    }
+    
+    // Ugly, but initialize the equivalent characters map
+    static {
+        equivalentCharacters.put("a", Arrays.asList("@", "4"));
+        equivalentCharacters.put("b", Arrays.asList("8"));
+        equivalentCharacters.put("c", null);
+        equivalentCharacters.put("d", null);
+        equivalentCharacters.put("e", Arrays.asList("3"));
+        equivalentCharacters.put("f", null);
+        equivalentCharacters.put("g", null);
+        equivalentCharacters.put("h", null);
+        equivalentCharacters.put("i", Arrays.asList("!", "l", "1"));
+        equivalentCharacters.put("j", null);
+        equivalentCharacters.put("k", null);
+        equivalentCharacters.put("l", Arrays.asList("1"));
+        equivalentCharacters.put("m", null);
+        equivalentCharacters.put("n", null);
+        equivalentCharacters.put("o", Arrays.asList("0"));
+        equivalentCharacters.put("p", null);
+        equivalentCharacters.put("q", null);
+        equivalentCharacters.put("r", null);
+        equivalentCharacters.put("s", Arrays.asList("5","$", "z"));
+        equivalentCharacters.put("t", Arrays.asList("+", "7"));
+        equivalentCharacters.put("u", null);
+        equivalentCharacters.put("v", null);
+        equivalentCharacters.put("w", null);
+        equivalentCharacters.put("x", null);
+        equivalentCharacters.put("y", null);
+        equivalentCharacters.put("z", Arrays.asList("2", "s"));
+        
+        
     }
 }
