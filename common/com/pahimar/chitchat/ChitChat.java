@@ -1,11 +1,13 @@
 package com.pahimar.chitchat;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
-import com.pahimar.chitchat.blacklist.BlackList;
+import com.pahimar.chitchat.blacklist.BannedWord;
 import com.pahimar.chitchat.chat.ChatListener;
 import com.pahimar.chitchat.command.CommandHandler;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
+import com.pahimar.chitchat.helper.BannedWordHelper;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
 
@@ -61,9 +63,6 @@ public class ChitChat {
         ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
         
         // TODO Read in the blacklist from file
-        for (String string : BlackList.getBlackList()) {
-            LogHelper.debug(string);
-        }
         
         NetworkRegistry.instance().registerChatListener(new ChatListener());
     }

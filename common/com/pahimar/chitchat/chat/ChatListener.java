@@ -4,7 +4,7 @@ import net.minecraft.network.packet.NetHandler;
 import net.minecraft.network.packet.Packet3Chat;
 
 import com.pahimar.chitchat.configuration.Settings;
-import com.pahimar.chitchat.helper.BlackListHelper;
+import com.pahimar.chitchat.helper.BannedWordHelper;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
 
@@ -34,7 +34,7 @@ public class ChatListener implements IChatListener {
             
             if (message.message.startsWith("/msg") || message.message.startsWith("/me") || !message.message.startsWith("/")) {
                 
-                if (BlackListHelper.findBannedWords(message.message)) {
+                if (BannedWordHelper.findBannedWords(message.message)) {
                     
                     if (Settings.FILTER_MODE == Reference.FILTER_MODE_WORD_CENSOR) {
                         // TODO Look for bad words
@@ -68,7 +68,7 @@ public class ChatListener implements IChatListener {
             
             if (message.message.startsWith("/msg") || message.message.startsWith("/me") || !message.message.startsWith("/")) {
                 
-                if (BlackListHelper.findBannedWords(message.message)) {
+                if (BannedWordHelper.findBannedWords(message.message)) {
                     
                     if (Settings.FILTER_MODE == Reference.FILTER_MODE_WORD_CENSOR) {
                         // TODO Replace the bad word

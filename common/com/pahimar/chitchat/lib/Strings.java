@@ -15,5 +15,9 @@ public class Strings {
     public static final String LINE_REMOVED_WITH_STRIKE = "chitchat:line_removed_strike";
     public static final String STRIKEOUT_ACTION_WITH_DURATION = "chitchat:strikeout.action_with_duration";
     public static final String STRIKEOUT_ACTION_NO_DURATION = "chitchat:strikeout.action_no_duration";
+    
+    // Regex helper constants
+    public static final String REGEX_WORD_DELIMITER = "\\b";
+    public static final String REGEX_SPACE_CHARACTER = "\\s";
 
 }
