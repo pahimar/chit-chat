@@ -2,7 +2,6 @@ package com.pahimar.chitchat;
 
 import java.io.File;
 
-import com.pahimar.chitchat.blacklist.BannedWordRegistry;
 import com.pahimar.chitchat.chat.ChatListener;
 import com.pahimar.chitchat.command.CommandHandler;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
@@ -30,13 +29,13 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER, certificateFingerprint = Reference.FINGERPRINT)
 @NetworkMod(clientSideRequired = false, serverSideRequired = false)
 public class ChitChat {
-    
+
     @Instance(com.pahimar.chitchat.lib.Reference.MOD_ID)
     public static ChitChat instance;
-    
+
     @EventHandler
     public void invalidFingerprint(FMLFingerprintViolationEvent event) {
-        
+
         if (Reference.FINGERPRINT.equals("@FINGERPRINT@")) {
             LogHelper.warning("The copy of ChitChat that you are running is a development version of the mod, and as such may be unstable and/or incomplete.");
         }
@@ -44,25 +43,24 @@ public class ChitChat {
             LogHelper.severe("The copy of ChitChat that you are running has been modified from the original, and unpredictable things may happen. Please consider re-downloading the original version of the mod.");
         }
     }
-    
+
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        
+
         CommandHandler.initCommands(event);
     }
-    
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        
+
         // Initialize the log helper
         LogHelper.init();
-        
+
         // Initialize the configuration 
         ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
-        
+
         // TODO Read in the blacklist from file
-        LogHelper.debug(BannedWordRegistry.getBannedWordMap().size());
-        
+
         NetworkRegistry.instance().registerChatListener(new ChatListener());
     }
 }

@@ -1,24 +1,58 @@
 package com.pahimar.chitchat.helper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.StatCollector;
+
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.Gson;
 import com.pahimar.chitchat.blacklist.BannedWord;
 import com.pahimar.chitchat.blacklist.BannedWordRegistry;
+import com.pahimar.chitchat.chat.message.CensoredChatMessage;
+import com.pahimar.chitchat.configuration.Settings;
+import com.pahimar.chitchat.lib.Reference;
 import com.pahimar.chitchat.lib.Strings;
 
 public class BannedWordHelper {
     
-    private static String regexSpecialCharacters = "\\^$.|?*+()[{";
+    private static Gson gson = new Gson();
+    
+    public static String censorPartialMessage(String message, boolean isServer) {
+        
+        if (isServer) {
+            
+            return "";
+        }
+        else {
 
-    private static Map<String, List<String>> equivalentCharacters = new HashMap<String, List<String>>();
+            return new ChatMessageComponent().toJson();
+        }
+    }
+    
+    public static String censorEntireMessage(String message, boolean isServer) {
+        
+        if (isServer) {
+            
+            return Settings.CENSOR_REPLACEMENT_TEXT;
+        }
+        else {
+            
+            CensoredChatMessage censoredChatMessage = gson.fromJson(message, CensoredChatMessage.class);
+
+            String[] chatMessageBody = new String[2];
+            chatMessageBody[1] = StatCollector.translateToLocal(Strings.CENSOR_REPLACEMENT_TEXT);
+
+            censoredChatMessage.translate = Reference.CHAT_TEXT_MESSAGE_TYPE;
+            censoredChatMessage.using = chatMessageBody;
+
+            return ChatMessageComponent.createFromJson(gson.toJson(censoredChatMessage)).toJson();
+        }
+    }
     
     public static boolean checkForBannedWords(String line) {
 
@@ -28,16 +62,15 @@ public class BannedWordHelper {
         for (String bannedWordKey : BannedWordRegistry.getBannedWordMap().keySet()) {
             
             Pattern bannedPattern = BannedWordRegistry.getBannedWordMap().get(bannedWordKey).getPattern();
-            
+
             if (bannedPattern != null) {
                 Matcher matcher = bannedPattern.matcher(line);
                 
-                if (matcher.matches()) {
+                if (matcher.find()) {
                     return true;
                 }
             }
         }
-        
         
         return false;
     }
@@ -56,7 +89,7 @@ public class BannedWordHelper {
             if (bannedWord.getPattern() != null) {
                 Matcher matcher = bannedWord.getPattern().matcher(line);
                 
-                if (matcher.matches()) {
+                if (matcher.find()) {
                     if (!bannedWordsUsed.contains(bannedWord.getBannedText())) {
                         bannedWordsUsed.add(bannedWord.getBannedText());
                     }
@@ -84,7 +117,7 @@ public class BannedWordHelper {
                 
                 // Does the banned word have to start with the banned text?
                 if (bannedWord.mustStartWithBannedText()) {
-                    regexStringBuilder.append(Strings.REGEX_WORD_DELIMITER);
+                    regexStringBuilder.append("(?:\\b|^)");
                 }
                 
                 /*
@@ -99,19 +132,19 @@ public class BannedWordHelper {
                         regexStringBuilder.append("(\\s)");
                     }
                     // Else if the character is a regex meta-character, escape the character and add it with a one or more modifier
-                    else if (regexSpecialCharacters.contains(character)) {
+                    else if (Strings.REGEX_SPECIAL_CHARACTERS.contains(character)) {
                         regexStringBuilder.append(String.format("(\\%s+)", character));
                     }
                     // Else the character is a character that doesn't require special escapes, so add it with a one or more modifier
                     else {
-                        if (equivalentCharacters.get(character) != null) {
+                        if (Reference.getEquivalentCharacterMap().get(character) != null) {
                             
                             regexStringBuilder.append(String.format("(%s+", character));
                             
-                            List<String> otherCharacters = equivalentCharacters.get(character);
+                            List<String> otherCharacters = Reference.getEquivalentCharacterMap().get(character);
                             
                             for (String otherCharacter : otherCharacters) {
-                                if (regexSpecialCharacters.contains(otherCharacter)) {
+                                if (Strings.REGEX_SPECIAL_CHARACTERS.contains(otherCharacter)) {
                                     regexStringBuilder.append(String.format("|\\%s+", otherCharacter));
                                 }
                                 else {
@@ -130,7 +163,7 @@ public class BannedWordHelper {
                 
                 // Does the banned word have to end with the banned text?
                 if (bannedWord.mustEndWithBannedText()) {
-                    regexStringBuilder.append(Strings.REGEX_WORD_DELIMITER);
+                    regexStringBuilder.append("(?:\\b|$)");
                 }
                 
                 return Pattern.compile(regexStringBuilder.toString());
@@ -138,35 +171,5 @@ public class BannedWordHelper {
         }
         
         return null;
-    }
-    
-    // Ugly, but initialize the equivalent characters map
-    static {
-        equivalentCharacters.put("a", Arrays.asList("@", "4"));
-        equivalentCharacters.put("b", Arrays.asList("8"));
-        equivalentCharacters.put("c", null);
-        equivalentCharacters.put("d", null);
-        equivalentCharacters.put("e", Arrays.asList("3"));
-        equivalentCharacters.put("f", null);
-        equivalentCharacters.put("g", null);
-        equivalentCharacters.put("h", null);
-        equivalentCharacters.put("i", Arrays.asList("!", "l", "1"));
-        equivalentCharacters.put("j", null);
-        equivalentCharacters.put("k", null);
-        equivalentCharacters.put("l", Arrays.asList("1"));
-        equivalentCharacters.put("m", null);
-        equivalentCharacters.put("n", null);
-        equivalentCharacters.put("o", Arrays.asList("0"));
-        equivalentCharacters.put("p", null);
-        equivalentCharacters.put("q", null);
-        equivalentCharacters.put("r", null);
-        equivalentCharacters.put("s", Arrays.asList("5","$", "z"));
-        equivalentCharacters.put("t", Arrays.asList("+", "7"));
-        equivalentCharacters.put("u", null);
-        equivalentCharacters.put("v", null);
-        equivalentCharacters.put("w", null);
-        equivalentCharacters.put("x", null);
-        equivalentCharacters.put("y", null);
-        equivalentCharacters.put("z", Arrays.asList("2", "s"));
     }
 }

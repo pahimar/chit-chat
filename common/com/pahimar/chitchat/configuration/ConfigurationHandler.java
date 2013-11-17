@@ -37,6 +37,10 @@ public class ConfigurationHandler {
             configuration.load();
 
             Settings.FILTER_MODE = configuration.get(CATEGORY_GENERAL, Settings.FILTER_MODE_CONFIGNAME, "" + Settings.FILTER_MODE_DEFAULT, Settings.FILTER_MODE_COMMENT, Property.Type.INTEGER).getInt(Settings.FILTER_MODE_DEFAULT);
+            
+            Settings.DEFAULT_BAN_LIST_ENABLED = configuration.get(CATEGORY_GENERAL, Settings.DEFAULT_BAN_LIST_ENABLED_CONFIGNAME, "" + Settings.DEFAULT_BAN_LIST_ENABLED_DEFAULT, Settings.DEFAULT_BAN_LIST_ENABLED_COMMENT, Property.Type.BOOLEAN).getBoolean(Settings.DEFAULT_BAN_LIST_ENABLED_DEFAULT);
+            
+            Settings.CENSOR_REPLACEMENT_TEXT = configuration.get(CATEGORY_GENERAL, Settings.CENSOR_REPLACEMENT_TEXT_CONFIGNAME, "" + Settings.CENSOR_REPLACEMENT_TEXT_DEFAULT, Settings.CENSOR_REPLACEMENT_TEXT_COMMENT, Property.Type.STRING).getString();
 
             Settings.STRIKE_SYSTEM_ENABLED = configuration.get(CATEGORY_GENERAL, Settings.STRIKE_SYSTEM_ENABLED_CONFIGNAME, "" + Settings.STRIKE_SYSTEM_ENABLED_DEFAULT, Settings.STRIKE_SYSTEM_ENABLED_COMMENT, Property.Type.BOOLEAN).getBoolean(Settings.STRIKE_SYSTEM_ENABLED_DEFAULT);
 

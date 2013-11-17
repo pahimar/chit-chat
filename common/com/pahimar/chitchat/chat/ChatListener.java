@@ -24,7 +24,7 @@ import cpw.mods.fml.common.network.IChatListener;
  * 
  */
 public class ChatListener implements IChatListener {
-
+    
     /*
      * (non-Javadoc)
      * @see
@@ -32,36 +32,47 @@ public class ChatListener implements IChatListener {
      * .packet.NetHandler, net.minecraft.network.packet.Packet3Chat)
      */
     @Override
-    public Packet3Chat serverChat(NetHandler handler, Packet3Chat message) {
+    public Packet3Chat serverChat(NetHandler netHandler, Packet3Chat packet3Chat) {
 
         if (Settings.FILTER_MODE > Reference.FILTER_MODE_NONE) {
             
-            if (message.message.startsWith("/msg") || message.message.startsWith("/me") || !message.message.startsWith("/")) {
+            if (packet3Chat.message.startsWith("/msg") || packet3Chat.message.startsWith("/me") || !packet3Chat.message.startsWith("/")) {
                 
-                if (BannedWordHelper.checkForBannedWords(message.message)) {
+                if (BannedWordHelper.checkForBannedWords(packet3Chat.message)) {
                     
-                    LogHelper.debug("[SERVER] A banned word was detected");
+                    // Gather the banned words the player used
+                    List<String> bannedWordsUsed = BannedWordHelper.getBannedWordsUsed(packet3Chat.message);
+                    StringBuilder bannedWordBuilder = new StringBuilder();
+                    for (String bannedWord : bannedWordsUsed) {
+                        bannedWordBuilder.append(String.format("'%s' ", bannedWord));
+                    }
                     
+                    // Filter the banned words from chat
                     if (Settings.FILTER_MODE == Reference.FILTER_MODE_WORD_CENSOR) {
-                        // TODO Look for bad words
+                        LogHelper.info(String.format("Partially censored a message that was sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
+                        packet3Chat.message = BannedWordHelper.censorPartialMessage(packet3Chat.message, true);
                     }
                     else if (Settings.FILTER_MODE == Reference.FILTER_MODE_LINE_CENSOR) {
-                        // TODO Log what happened
-                        message.message = "[Message removed by SafeChat]";
+                        LogHelper.info(String.format("Completely censored a message that was sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
+                        packet3Chat.message = BannedWordHelper.censorEntireMessage(packet3Chat.message, true);
                     }
                     else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE) {
-                        // TODO Log what happened
-                        message = null;
+                        LogHelper.info(String.format("Stopped a message from being sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
+                        packet3Chat = null;
                     }
 
-                    // TODO if any of the filters trips, tell the offending user what word they said that's not allowed
-                    List<String> bannedWordsUsed = BannedWordHelper.getBannedWordsUsed(message.message);
-                    handler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText("<Safe Chat> Bad words!").setItalic(true).setColor(EnumChatFormatting.GRAY));
+                    // Notify the player that they said something that is banned, and what they said
+                    netHandler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText(String.format("<%s-Server> Not allowed to say the following words on this server: %s", Reference.MOD_NAME, bannedWordBuilder.toString())).setColor(EnumChatFormatting.GRAY));
+                    
+                    // Perform whatever strikes are necessary, if the strike system is enabled
+                    if (Settings.STRIKE_SYSTEM_ENABLED) {
+                        // TODO Strike system
+                    }
                 }
             }
         }
         
-        return message;
+        return packet3Chat;
     }
 
     /*
@@ -71,30 +82,28 @@ public class ChatListener implements IChatListener {
      * .packet.NetHandler, net.minecraft.network.packet.Packet3Chat)
      */
     @Override
-    public Packet3Chat clientChat(NetHandler handler, Packet3Chat message) {
+    public Packet3Chat clientChat(NetHandler netHandler, Packet3Chat packet3Chat) {
 
         if (Settings.FILTER_MODE > Reference.FILTER_MODE_NONE) {
             
-            if (message.message.startsWith("/msg") || message.message.startsWith("/me") || !message.message.startsWith("/")) {
+            if (packet3Chat.message.startsWith("/msg") || packet3Chat.message.startsWith("/me") || !packet3Chat.message.startsWith("/")) {
                 
-                if (BannedWordHelper.checkForBannedWords(message.message)) {
-                    
-                    LogHelper.debug("[CLIENT] A banned word was detected");
+                if (BannedWordHelper.checkForBannedWords(packet3Chat.message)) {
                     
                     if (Settings.FILTER_MODE == Reference.FILTER_MODE_WORD_CENSOR) {
-                        // TODO Replace the bad word
+                        // TODO Localize the message and format
+                        packet3Chat.message = BannedWordHelper.censorPartialMessage(packet3Chat.message, false);
                     }
                     else if (Settings.FILTER_MODE == Reference.FILTER_MODE_LINE_CENSOR) {
-                        // TODO Replace the line
+                        packet3Chat.message = BannedWordHelper.censorEntireMessage(packet3Chat.message, false);
                     }
                     else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE) {
-                        LogHelper.debug("Client nulling the message");
-                        message = null;
+                        packet3Chat = null;
                     }
                 }
             }
         }
         
-        return message;
+        return packet3Chat;
     }
 }

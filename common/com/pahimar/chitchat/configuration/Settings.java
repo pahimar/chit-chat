@@ -14,12 +14,12 @@ import com.pahimar.chitchat.lib.Reference;
 public class Settings {
 
     /*
-     * FML capabilities
+     *  FML capabilities
      */
     public static boolean FML_CAN_CANCEL_MESSAGES;
     
     /*
-     * Filter mode
+     *  Filter mode
      */
     public static int FILTER_MODE;
     public static final String FILTER_MODE_CONFIGNAME = "filter_mode";
@@ -27,7 +27,23 @@ public class Settings {
     public static final String FILTER_MODE_COMMENT = "Sets the filtering mode for ChitChat (default is 1):\n0 - No filtering\n1 - Word replacement (black listed words are replaced with ***)\n2 - Line replacement (entire line is replaced)\n3 - Hidden (chat messages containing black listed words do not appear)";
     
     /*
-     * Strikes
+     *  Use default banned word list
+     */
+    public static boolean DEFAULT_BAN_LIST_ENABLED;
+    public static final String DEFAULT_BAN_LIST_ENABLED_CONFIGNAME = "default_banned_words_list_enabled";
+    public static final boolean DEFAULT_BAN_LIST_ENABLED_DEFAULT = true;
+    public static final String DEFAULT_BAN_LIST_ENABLED_COMMENT = "Whether or not to use the included default banned words list (default is true)";
+    
+    /*
+     *  Default censor replacement text
+     */
+    public static String CENSOR_REPLACEMENT_TEXT;
+    public static final String CENSOR_REPLACEMENT_TEXT_CONFIGNAME = "server.censor_replacement_text";
+    public static final String CENSOR_REPLACEMENT_TEXT_DEFAULT = "******";
+    public static final String CENSOR_REPLACEMENT_TEXT_COMMENT = "The replacement text that should be used when the server censors a word/line a player says (default is '******')";
+    
+    /*
+     *  Strikes
      */
     public static boolean STRIKE_SYSTEM_ENABLED;
     public static final String STRIKE_SYSTEM_ENABLED_CONFIGNAME = "strike_system_enabled";
@@ -45,7 +61,7 @@ public class Settings {
     public static final String STRIKE_EXPIRATION_TIME_COMMENT = "How long, in seconds, a strike will stay on a player until the strike is removed (default is 60)";
     
     /*
-     * Exceeded Strikes Action
+     *  Exceeded Strikes Action
      */
     public static int STRIKEOUT_ACTION;
     public static final String STRIKEOUT_ACTION_CONFIGNAME = "strikeout_action";
