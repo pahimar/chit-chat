@@ -1,10 +1,15 @@
 package com.pahimar.chitchat.blacklist;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.pahimar.chitchat.lib.Reference;
 
 /**
  * ChitChat
@@ -25,41 +30,47 @@ public class BannedWordRegistry {
         
     }
     
-    public static List<String> getBannedWordList() {
+    public static void init() {
         
         if (bannedWordRegistry == null) {
             bannedWordRegistry = new BannedWordRegistry();
             loadBannedWordMap();
         }
-        
-        return ImmutableList.copyOf(bannedWordMap.keySet());
     }
     
-    public static void loadBannedWordMap() {
+    
+    public static Map<String, BannedWord> getBannedWordMap() {
+        
+        init();
+        
+        return ImmutableMap.copyOf(bannedWordMap);
+    }
+    
+    private static void loadBannedWordMap() {
         
         if (bannedWordMap == null) {
             bannedWordMap = new HashMap<String, BannedWord>();
         }
-//        
-//        try {
-//            InputStream inputStream = BlackList.class.getClass().getResourceAsStream(Reference.DEFAULT_BLACKLIST_FILE_LOCATION);
-//            
-//            if (inputStream != null) {
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-//                String line = null;
-//                
-//                while ((line = reader.readLine()) != null) {
-//                    if (!blackList.contains(line.toLowerCase())) {
-//                        blackList.add(line.toLowerCase());
-//                    }
-//                }
-//            }
-//        }
-//        catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        
+        try {
+            InputStream inputStream = bannedWordRegistry.getClass().getResourceAsStream(Reference.DEFAULT_BLACKLIST_FILE_LOCATION);
+            
+            if (inputStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = null;
+                
+                while ((line = reader.readLine()) != null) {
+                    if (!bannedWordMap.containsKey(line.toLowerCase())) {
+                        bannedWordMap.put(line.toLowerCase(), new BannedWord(line.toLowerCase()));
+                    }
+                }
+            }
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.pahimar.chitchat;
 
 import java.io.File;
 
+import com.pahimar.chitchat.blacklist.BannedWordRegistry;
 import com.pahimar.chitchat.chat.ChatListener;
 import com.pahimar.chitchat.command.CommandHandler;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
@@ -60,6 +61,7 @@ public class ChitChat {
         ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
         
         // TODO Read in the blacklist from file
+        LogHelper.debug(BannedWordRegistry.getBannedWordMap().size());
         
         NetworkRegistry.instance().registerChatListener(new ChatListener());
     }

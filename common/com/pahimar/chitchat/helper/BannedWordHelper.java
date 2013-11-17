@@ -1,14 +1,17 @@
 package com.pahimar.chitchat.helper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.pahimar.chitchat.blacklist.BannedWord;
+import com.pahimar.chitchat.blacklist.BannedWordRegistry;
 import com.pahimar.chitchat.lib.Strings;
 
 public class BannedWordHelper {
@@ -17,9 +20,51 @@ public class BannedWordHelper {
 
     private static Map<String, List<String>> equivalentCharacters = new HashMap<String, List<String>>();
     
-    public static boolean findBannedWords(String line) {
+    public static boolean checkForBannedWords(String line) {
 
-        return true;
+        line = line.toLowerCase();
+        line = StringUtils.normalizeSpace(line);
+        
+        for (String bannedWordKey : BannedWordRegistry.getBannedWordMap().keySet()) {
+            
+            Pattern bannedPattern = BannedWordRegistry.getBannedWordMap().get(bannedWordKey).getPattern();
+            
+            if (bannedPattern != null) {
+                Matcher matcher = bannedPattern.matcher(line);
+                
+                if (matcher.matches()) {
+                    return true;
+                }
+            }
+        }
+        
+        
+        return false;
+    }
+    
+    public static List<String> getBannedWordsUsed(String line) {
+        
+        List<String> bannedWordsUsed = new ArrayList<String>();
+        
+        line = line.toLowerCase();
+        line = StringUtils.normalizeSpace(line);
+        
+        for (String bannedWordKey : BannedWordRegistry.getBannedWordMap().keySet()) {
+            
+            BannedWord bannedWord = BannedWordRegistry.getBannedWordMap().get(bannedWordKey);
+            
+            if (bannedWord.getPattern() != null) {
+                Matcher matcher = bannedWord.getPattern().matcher(line);
+                
+                if (matcher.matches()) {
+                    if (!bannedWordsUsed.contains(bannedWord.getBannedText())) {
+                        bannedWordsUsed.add(bannedWord.getBannedText());
+                    }
+                }
+            }
+        }
+        
+        return bannedWordsUsed;
     }
     
     public static Pattern generatePatternFromBannedWord(String bannedWord) {
@@ -123,7 +168,5 @@ public class BannedWordHelper {
         equivalentCharacters.put("x", null);
         equivalentCharacters.put("y", null);
         equivalentCharacters.put("z", Arrays.asList("2", "s"));
-        
-        
     }
 }

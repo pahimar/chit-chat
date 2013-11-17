@@ -21,7 +21,7 @@ public class Reference {
     public static final int MIN_FML_BUILD_NUMBER = 952;
     
     /* Locations of the blacklists */
-    public static final String DEFAULT_BLACKLIST_FILE_LOCATION = "/assets/chitchat/lang/defaultCurseBlackList.lang";
+    public static final String DEFAULT_BLACKLIST_FILE_LOCATION = "/assets/chitchat/bannedwords/default.properties";
     public static final String CONFIG_BLACKLIST_FILE_LOCATION = "";
     
     /* Filter mode related constants */
