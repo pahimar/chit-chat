@@ -45,6 +45,7 @@ public class BannedWordHelper {
             CensoredChatMessage censoredChatMessage = gson.fromJson(message, CensoredChatMessage.class);
 
             String[] chatMessageBody = new String[2];
+            chatMessageBody[0] = censoredChatMessage.using[0];
             chatMessageBody[1] = StatCollector.translateToLocal(Strings.CENSOR_REPLACEMENT_TEXT);
 
             censoredChatMessage.translate = Reference.CHAT_TEXT_MESSAGE_TYPE;
