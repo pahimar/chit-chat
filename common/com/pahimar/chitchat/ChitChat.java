@@ -59,8 +59,7 @@ public class ChitChat {
         // Initialize the configuration 
         ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
 
-        // TODO Read in the blacklist from file
-
+        // Register the chat listener
         NetworkRegistry.instance().registerChatListener(new ChatListener());
     }
 }

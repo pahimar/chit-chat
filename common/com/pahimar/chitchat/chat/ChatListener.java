@@ -56,9 +56,13 @@ public class ChatListener implements IChatListener {
                         LogHelper.info(String.format("Completely censored a message that was sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
                         packet3Chat.message = BannedWordHelper.censorEntireMessage(packet3Chat.message, true);
                     }
-                    else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE) {
+                    else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE && Settings.FML_CAN_CANCEL_MESSAGES) {
                         LogHelper.info(String.format("Stopped a message from being sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
                         packet3Chat = null;
+                    }
+                    else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE && !Settings.FML_CAN_CANCEL_MESSAGES) {
+                        LogHelper.info(String.format("Completely censored a message that was sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
+                        packet3Chat.message = BannedWordHelper.censorEntireMessage(packet3Chat.message, true);
                     }
 
                     // Notify the player that they said something that is banned, and what they said
@@ -97,8 +101,11 @@ public class ChatListener implements IChatListener {
                     else if (Settings.FILTER_MODE == Reference.FILTER_MODE_LINE_CENSOR) {
                         packet3Chat.message = BannedWordHelper.censorEntireMessage(packet3Chat.message, false);
                     }
-                    else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE) {
+                    else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE && Settings.FML_CAN_CANCEL_MESSAGES) {
                         packet3Chat = null;
+                    }
+                    else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE && !Settings.FML_CAN_CANCEL_MESSAGES) {
+                        packet3Chat.message = BannedWordHelper.censorEntireMessage(packet3Chat.message, false);
                     }
                 }
             }

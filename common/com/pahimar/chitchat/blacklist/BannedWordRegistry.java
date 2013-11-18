@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
+import com.pahimar.chitchat.configuration.Settings;
 import com.pahimar.chitchat.lib.Reference;
 
 /**
@@ -52,25 +53,29 @@ public class BannedWordRegistry {
             bannedWordMap = new HashMap<String, BannedWord>();
         }
         
-        try {
-            InputStream inputStream = bannedWordRegistry.getClass().getResourceAsStream(Reference.DEFAULT_BLACKLIST_FILE_LOCATION);
-            
-            if (inputStream != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line = null;
+        if (Settings.DEFAULT_BAN_LIST_ENABLED) {
+            try {
+                InputStream inputStream = bannedWordRegistry.getClass().getResourceAsStream(Reference.DEFAULT_BLACKLIST_FILE_LOCATION);
                 
-                while ((line = reader.readLine()) != null) {
-                    if (!bannedWordMap.containsKey(line.toLowerCase())) {
-                        bannedWordMap.put(line.toLowerCase(), new BannedWord(line.toLowerCase()));
+                if (inputStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = null;
+                    
+                    while ((line = reader.readLine()) != null) {
+                        if (!bannedWordMap.containsKey(line.toLowerCase())) {
+                            bannedWordMap.put(line.toLowerCase(), new BannedWord(line.toLowerCase()));
+                        }
                     }
                 }
             }
+            catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        
+        // TODO Load in custom banned words list from external file
     }
 }
