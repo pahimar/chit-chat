@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.pahimar.chitchat.blacklist.BannedWord;
 import com.pahimar.chitchat.blacklist.BannedWordRegistry;
 import com.pahimar.chitchat.chat.message.CensoredChatMessage;
+import com.pahimar.chitchat.chat.message.CustomChatMessage;
 import com.pahimar.chitchat.configuration.Settings;
 import com.pahimar.chitchat.lib.Reference;
 import com.pahimar.chitchat.lib.Strings;
@@ -26,11 +27,43 @@ public class BannedWordHelper {
         
         if (isServer) {
             
-            return "";
+            for (String bannedWordKey : BannedWordRegistry.getBannedWordMap().keySet()) {
+                
+                Pattern bannedPattern = BannedWordRegistry.getBannedWordMap().get(bannedWordKey).getPattern();
+
+                if (bannedPattern != null) {
+                    Matcher matcher = bannedPattern.matcher(message);
+                    
+                    if (matcher.find()) {
+                        message = matcher.replaceAll("******");
+                    }
+                }
+            }
+            
+            return message;
         }
         else {
+            
+            CustomChatMessage customChatMessage = gson.fromJson(message, CustomChatMessage.class);
+            
+            if (customChatMessage.using.length >= 2) {
+                for (int i = 1; i < customChatMessage.using.length; i++) {
+                    for (String bannedWordKey : BannedWordRegistry.getBannedWordMap().keySet()) {
+                        
+                        Pattern bannedPattern = BannedWordRegistry.getBannedWordMap().get(bannedWordKey).getPattern();
 
-            return new ChatMessageComponent().toJson();
+                        if (bannedPattern != null) {
+                            Matcher matcher = bannedPattern.matcher(customChatMessage.using[i]);
+                            
+                            if (matcher.find()) {
+                                customChatMessage.using[i] = matcher.replaceAll(StatCollector.translateToLocal(Strings.CENSOR_REPLACEMENT_TEXT));
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ChatMessageComponent.createFromJson(gson.toJson(customChatMessage)).toJson();
         }
     }
     
@@ -123,7 +156,7 @@ public class BannedWordHelper {
                 
                 // Does the banned word have to start with the banned text?
                 if (bannedWord.mustStartWithBannedText()) {
-                    regexStringBuilder.append("(?:\\b|^)");
+                    regexStringBuilder.append("(?:\\b|^)(?i)");
                 }
                 
                 /*
