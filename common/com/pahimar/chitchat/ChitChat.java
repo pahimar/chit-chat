@@ -7,6 +7,7 @@ import com.pahimar.chitchat.command.CommandHandler;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
+import com.pahimar.chitchat.strike.StrikeRegistryTickHandler;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -16,6 +17,8 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * ChitChat
@@ -58,6 +61,9 @@ public class ChitChat {
 
         // Initialize the configuration 
         ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
+        
+        // Registry the Strike Registry tick handler
+        TickRegistry.registerScheduledTickHandler(new StrikeRegistryTickHandler(), Side.SERVER);
 
         // Register the chat listener
         NetworkRegistry.instance().registerChatListener(new ChatListener());

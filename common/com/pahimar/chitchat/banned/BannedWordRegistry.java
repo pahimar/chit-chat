@@ -1,4 +1,4 @@
-package com.pahimar.chitchat.blacklist;
+package com.pahimar.chitchat.banned;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -54,11 +54,15 @@ public class BannedWordRegistry {
         }
         
         if (Settings.DEFAULT_BAN_LIST_ENABLED) {
+            
+            InputStream inputStream = null; 
+            BufferedReader reader = null;
+            
             try {
-                InputStream inputStream = bannedWordRegistry.getClass().getResourceAsStream(Reference.DEFAULT_BLACKLIST_FILE_LOCATION);
+                inputStream = bannedWordRegistry.getClass().getResourceAsStream(Reference.DEFAULT_BLACKLIST_FILE_LOCATION);
                 
                 if (inputStream != null) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    reader = new BufferedReader(new InputStreamReader(inputStream));
                     String line = null;
                     
                     while ((line = reader.readLine()) != null) {
@@ -73,6 +77,15 @@ public class BannedWordRegistry {
             }
             catch (IOException e) {
                 e.printStackTrace();
+            }
+            finally {
+                try {
+                    inputStream.close();
+                    reader.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         

@@ -11,8 +11,8 @@ import net.minecraft.util.StatCollector;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
-import com.pahimar.chitchat.blacklist.BannedWord;
-import com.pahimar.chitchat.blacklist.BannedWordRegistry;
+import com.pahimar.chitchat.banned.BannedWord;
+import com.pahimar.chitchat.banned.BannedWordRegistry;
 import com.pahimar.chitchat.chat.message.CensoredChatMessage;
 import com.pahimar.chitchat.chat.message.CustomChatMessage;
 import com.pahimar.chitchat.configuration.Settings;
