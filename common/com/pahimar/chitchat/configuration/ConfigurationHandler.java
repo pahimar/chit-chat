@@ -46,13 +46,26 @@ public class ConfigurationHandler {
 
             configuration.addCustomCategoryComment(CATEGORY_STRIKE_SYSTEM, CATEGORY_STRIKE_SYSTEM_COMMENT);
             
+            // Strike duration
             Settings.STRIKE_EXPIRATION_TIME = configuration.get(CATEGORY_STRIKE_SYSTEM, Settings.STRIKE_EXPIRATION_TIME_CONFIGNAME, "" + Settings.STRIKE_EXPIRATION_TIME_DEFAULT, Settings.STRIKE_EXPIRATION_TIME_COMMENT, Property.Type.INTEGER).getInt(Settings.STRIKE_EXPIRATION_TIME_DEFAULT);
+            if (Settings.STRIKE_EXPIRATION_TIME > Reference.MAX_SECONDS) {
+                Settings.STRIKE_EXPIRATION_TIME = Reference.MAX_SECONDS;
+            }
             
+            // Maximum number of strikes allowed
             Settings.MAX_STRIKES_ALLOWED = configuration.get(CATEGORY_STRIKE_SYSTEM, Settings.MAX_STRIKES_ALLOWED_CONFIGNAME, "" + Settings.MAX_STRIKES_ALLOWED_DEFAULT, Settings.MAX_STRIKES_ALLOWED_COMMENT, Property.Type.INTEGER).getInt(Settings.MAX_STRIKES_ALLOWED_DEFAULT);
 
+            // Strikeout penalty
             Settings.STRIKEOUT_ACTION = configuration.get(CATEGORY_STRIKE_SYSTEM, Settings.STRIKEOUT_ACTION_CONFIGNAME, "" + Settings.STRIKEOUT_ACTION_DEFAULT, Settings.STRIKEOUT_ACTION_COMMENT, Property.Type.INTEGER).getInt(Settings.STRIKEOUT_ACTION_DEFAULT);
+            
+            // Notify admins on strikeout
+            Settings.STRIKEOUT_NOTIFY_OPS = configuration.get(CATEGORY_GENERAL, Settings.STRIKEOUT_NOTIFY_OPS_CONFIGNAME, "" + Settings.STRIKEOUT_NOTIFY_OPS_DEFAULT, Settings.STRIKEOUT_NOTIFY_OPS_COMMENT, Property.Type.BOOLEAN).getBoolean(Settings.STRIKEOUT_NOTIFY_OPS_DEFAULT);
 
+            // Strikeout penalty duration
             Settings.STRIKEOUT_ACTION_DURATION = configuration.get(CATEGORY_STRIKE_SYSTEM, Settings.STRIKEOUT_ACTION_DURATION_CONFIGNAME, "" + Settings.STRIKEOUT_ACTION_DURATION_DEFAULT, Settings.STRIKEOUT_ACTION_DURATION_COMMENT, Property.Type.INTEGER).getInt(Settings.STRIKEOUT_ACTION_DURATION_DEFAULT);
+            if (Settings.STRIKEOUT_ACTION_DURATION > Reference.MAX_SECONDS) {
+                Settings.STRIKEOUT_ACTION_DURATION = Reference.MAX_SECONDS;
+            }
             
             Settings.FML_CAN_CANCEL_MESSAGES = GeneralHelper.canFMLCancelChatMessages();
         }

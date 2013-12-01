@@ -1,30 +1,35 @@
 package com.pahimar.chitchat.proxy;
 
-import com.pahimar.chitchat.helper.LogHelper;
-
 public class ClientProxy implements IProxy {
 
     @Override
-    public void handleKick() {
+    public void notifyAdmins(String message) {
 
-        LogHelper.debug("Client - handle kick");
-    }
-    
-    @Override
-    public void handleChatDisabled() {
-
-        LogHelper.debug("Client - handle chat disabled");
+        // NOOP
     }
 
     @Override
-    public void handleTimeOut() {
+    public void handleKick(String playerName, String reason) {
 
-        LogHelper.debug("Client - handle time out");
+        // NOOP
     }
 
     @Override
-    public void handleBan() {
+    public void handleChatDisabled(String playerName, String reason) {
 
-        LogHelper.debug("Client - handle ban");
+        // NOOP
     }
+
+    @Override
+    public void handleTimeOut(String playerName, String reason) {
+
+        // NOOP
+    }
+
+    @Override
+    public void handleBan(String playerName, String reason) {
+
+        // NOOP
+    }
+
 }

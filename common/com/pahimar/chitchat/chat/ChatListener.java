@@ -2,7 +2,6 @@ package com.pahimar.chitchat.chat;
 
 import java.util.List;
 
-import net.minecraft.network.NetServerHandler;
 import net.minecraft.network.packet.NetHandler;
 import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.util.ChatMessageComponent;
@@ -11,8 +10,10 @@ import net.minecraft.util.EnumChatFormatting;
 import com.pahimar.chitchat.ChitChat;
 import com.pahimar.chitchat.configuration.Settings;
 import com.pahimar.chitchat.helper.BannedWordHelper;
+import com.pahimar.chitchat.helper.GeneralHelper;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
+import com.pahimar.chitchat.lib.Strings;
 import com.pahimar.chitchat.strike.StrikeRegistry;
 
 import cpw.mods.fml.common.network.IChatListener;
@@ -52,6 +53,7 @@ public class ChatListener implements IChatListener {
                             bannedWordBuilder.append(String.format("'%s' ", bannedWord));
                         }
                         
+                        // TODO String tokens
                         // Filter the banned words from chat
                         if (Settings.FILTER_MODE == Reference.FILTER_MODE_WORD_CENSOR) {
                             LogHelper.info(String.format("Partially censored a message that was sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
@@ -76,7 +78,7 @@ public class ChatListener implements IChatListener {
                         // Perform whatever strikes are necessary, if the strike system is enabled
                         if (Settings.STRIKE_SYSTEM_ENABLED) {
                             
-                            StrikeRegistry.getInstance().addStrike(netHandler.getPlayer().username);
+                            StrikeRegistry.getInstance().addStrike(netHandler.getPlayer().username, Strings.REASON_BANNED_WORD_USAGE);
                             int strikeCount = StrikeRegistry.getInstance().getStrikes(netHandler.getPlayer().username);
                             
                             if (strikeCount < Settings.MAX_STRIKES_ALLOWED) {
@@ -84,17 +86,21 @@ public class ChatListener implements IChatListener {
                             }
                             // Player just struck out
                             else {
+                                
                                 if (Settings.STRIKEOUT_ACTION == Reference.ACTION_KICK) {
-                                    ChitChat.proxy.handleKick();
+                                    LogHelper.info(String.format(Strings.TEMPLATE_STRIKE_OUT_WITH_PENALTY, netHandler.getPlayer().username, Strings.ACTION_KICKED, Strings.REASON_BANNED_WORD_USAGE));
+                                    ChitChat.proxy.handleKick(netHandler.getPlayer().username, String.format(Strings.TEMPLATE_STRUCK_OUT_KICK_MESSAGE, Reference.MOD_NAME, Strings.REASON_STRIKEOUT_WORD_USAGE));
                                 }
                                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_DISABLE_CHAT) {
-                                    ChitChat.proxy.handleChatDisabled();
+                                    // TODO Notify the player that they are now timed out for X length of time
                                 }
                                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_TIME_OUT) {
-                                    ChitChat.proxy.handleTimeOut();
+                                    LogHelper.info(String.format(Strings.TEMPLATE_STRIKE_OUT_WITH_TIMED_PENALTY, netHandler.getPlayer().username, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE, Strings.ACTION_TIMED_OUT));
+                                    ChitChat.proxy.handleTimeOut(netHandler.getPlayer().username, String.format(Strings.TEMPLATE_STRUCK_OUT_TIMEOUT_MESSAGE, Reference.MOD_NAME, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_STRIKEOUT_WORD_USAGE));
                                 }
                                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_BAN) {
-                                    ChitChat.proxy.handleBan();
+                                    LogHelper.info(String.format(Strings.TEMPLATE_STRIKE_OUT_WITH_PENALTY, netHandler.getPlayer().username, Strings.ACTION_BANNED, Strings.REASON_BANNED_WORD_USAGE));
+                                    ChitChat.proxy.handleBan(netHandler.getPlayer().username, String.format(Strings.TEMPLATE_STRUCK_OUT_BANNED_MESSAGE, Reference.MOD_NAME, Strings.REASON_STRIKEOUT_WORD_USAGE));
                                 }
                             }
                         }
@@ -104,16 +110,22 @@ public class ChatListener implements IChatListener {
             // Player is struck out
             else {
                 if (Settings.STRIKEOUT_ACTION == Reference.ACTION_KICK) {
-                    ChitChat.proxy.handleKick();
+                    // NOOP
                 }
                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_DISABLE_CHAT) {
-                    ChitChat.proxy.handleChatDisabled();
+                    // TODO Notify the player that they are timed out for X length of time longer
+                    if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE && Settings.FML_CAN_CANCEL_MESSAGES) {
+                        packet3Chat = null;
+                    }
+                    else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE && !Settings.FML_CAN_CANCEL_MESSAGES) {
+                        packet3Chat.message = BannedWordHelper.censorEntireMessage(packet3Chat.message, true);
+                    }
                 }
                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_TIME_OUT) {
-                    ChitChat.proxy.handleTimeOut();
+                    // NOOP
                 }
                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_BAN) {
-                    ChitChat.proxy.handleBan();
+                    // NOOP
                 }
             }
         }

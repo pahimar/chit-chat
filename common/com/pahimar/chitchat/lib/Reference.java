@@ -27,6 +27,7 @@ public class Reference {
     /* Misc constants */
     public static final int MIN_FML_BUILD_NUMBER = 952;
     public static final int TICKS_IN_SECOND = 20;
+    public static final int MAX_SECONDS = 86400; // TODO Make sure all time penalties do not exceed this
     
     /* Locations of the blacklists */
     public static final String DEFAULT_BLACKLIST_FILE_LOCATION = "/assets/chitchat/bannedwords/default.properties";

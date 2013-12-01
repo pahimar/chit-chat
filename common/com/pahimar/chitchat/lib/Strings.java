@@ -13,8 +13,33 @@ public class Strings {
     
     public static final String CENSOR_REPLACEMENT_TEXT = "chitchat:censor_replacement_text";
     
-    // Strike out message templates
-    public static final String STRIKEOUT_TIME_OUT_TEMPLATE = "[ChitChat] Player '%s' is in a time out for %s more seconds (Reason: Struck out)";
+    // Strike reasons
+    public static final String REASON_BANNED_WORD_USAGE = "Banned word usage";
+    public static final String REASON_ADMIN = "Admin";
+    public static final String REASON_STRIKEOUT_ADMIN = "an admin struck you out!";
+    public static final String REASON_STRIKEOUT_WORD_USAGE = "struck out for using banned words!";
+    public static final String REASON_STRIKEOUT_KICK = "Strike out kick";
+    public static final String REASON_STRIKEOUT_KICK_AND_TIMEOUT = "Strike out kick and time out";
+    public static final String REASON_STRIKEOUT_BAN = "Strike out ban";
+    public static final String REASON_STRIKE_EXPIRATION = "Strike expiration";
+    
+    // Strike actions
+    public static final String ACTION_KICKED = "kicked";
+    public static final String ACTION_CHAT_DISABLED = "censored";
+    public static final String ACTION_TIMED_OUT = "timed out";
+    public static final String ACTION_BANNED = "banned";
+    
+    // String templates
+    public static final String TEMPLATE_ADMIN_MESSAGE = "<%s-Server> %s";
+    public static final String TEMPLATE_STRUCK_OUT_KICK_MESSAGE = "%s: You've been kicked from the server because - %s";
+    public static final String TEMPLATE_STRUCK_OUT_TIMEOUT_MESSAGE = "%s: You've been removed from the server for %s because - %s";
+    public static final String TEMPLATE_STRUCK_OUT_BANNED_MESSAGE = "%s: You've been banned from the server because - %s";
+    
+    public static final String TEMPLATE_STRIKE_ADDED = "Player '%s' has received a strike (Reason: %s)";
+    public static final String TEMPLATE_STRIKES_CLEARED = "Player '%s' has had all strikes cleared (Reason: %s)";
+    public static final String TEMPLATE_STRIKE_OUT_WITH_PENALTY = "Player '%s' has struck out and was %s (Reason: %s)";
+    public static final String TEMPLATE_STRIKE_OUT_WITH_TIMED_PENALTY = "Player '%s' has struck out and will be penalized for %s (Reason: %s)";
+    public static final String TEMPLATE_TIME_OUT_ATTEMPTED_JOIN = "[ChitChat] Player '%s' is timed out and prevented from joining the server again for another %s (Reason: Struck out)";
     
     // Regex helper constants
     public static final String REGEX_WORD_DELIMITER = "\\b";

@@ -39,8 +39,8 @@ public class ConnectionHandler implements IConnectionHandler {
             if (Settings.STRIKE_SYSTEM_ENABLED) {
                 if (Settings.STRIKEOUT_ACTION == Reference.ACTION_TIME_OUT) {
                     if (StrikeRegistry.getInstance().isStruckOut(netHandler.clientUsername)) {
-                        LogHelper.info(String.format(Strings.STRIKEOUT_TIME_OUT_TEMPLATE, netHandler.clientUsername, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.clientUsername))));
-                        return String.format(Strings.STRIKEOUT_TIME_OUT_TEMPLATE, netHandler.clientUsername, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.clientUsername)));
+                        LogHelper.info(String.format(Strings.TEMPLATE_TIME_OUT_ATTEMPTED_JOIN, netHandler.clientUsername, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.clientUsername))));
+                        return String.format(Strings.TEMPLATE_TIME_OUT_ATTEMPTED_JOIN, netHandler.clientUsername, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.clientUsername)));
                     }
                 }
             }

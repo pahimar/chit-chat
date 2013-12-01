@@ -1,10 +1,15 @@
 package com.pahimar.chitchat.strike;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+import com.pahimar.chitchat.ChitChat;
 import com.pahimar.chitchat.configuration.Settings;
+import com.pahimar.chitchat.helper.GeneralHelper;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
+import com.pahimar.chitchat.lib.Strings;
 
 public class StrikeRegistry {
 
@@ -53,23 +58,23 @@ public class StrikeRegistry {
         return 0;
     }
 
-    public void addStrike(String playerName) {
+    public void addStrike(String playerName, String reason) {
 
         String playerNameLowerCase = playerName.toLowerCase();
 
+        LogHelper.info(String.format(Strings.TEMPLATE_STRIKE_ADDED, playerName, reason));
+        
         if (hasStrikes(playerNameLowerCase)) {
             if (getStrikes(playerNameLowerCase) < Settings.MAX_STRIKES_ALLOWED) {
                 strikeMap.get(playerNameLowerCase).updateStrikeCountBy(1);
             }
             else {
-                strikeMap.get(playerNameLowerCase).updateStrikeCountBy(Settings.MAX_STRIKES_ALLOWED);
+                strikeOut(playerName, reason);
             }
         }
         else {
             strikeMap.put(playerNameLowerCase, new Strike(playerNameLowerCase));
         }
-        
-        // TODO Logging
     }
     
     public boolean isStruckOut(String playerName) {
@@ -83,15 +88,20 @@ public class StrikeRegistry {
         return false;
     }
 
-    public void clearStrikes(String playerName) {
+    public void clearStrikes(String playerName, String reason) {
 
         if (hasStrikes(playerName)) {
+            
+            if (isStruckOut(playerName)) {
+                ChitChat.proxy.notifyAdmins(String.format(Strings.TEMPLATE_STRIKES_CLEARED, playerName, reason));
+                LogHelper.info(String.format(Strings.TEMPLATE_STRIKES_CLEARED, playerName, reason));
+            }
+            
             strikeMap.remove(playerName.toLowerCase());
-            // TODO Logging
         }
     }
     
-    public void strikeOut(String playerName) {
+    public void strikeOut(String playerName, String reason) {
         
         String playerNameLowerCase = playerName.toLowerCase();
 
@@ -102,7 +112,7 @@ public class StrikeRegistry {
             strikeMap.put(playerNameLowerCase, new Strike(playerNameLowerCase, Settings.MAX_STRIKES_ALLOWED, Settings.STRIKEOUT_ACTION_DURATION * Reference.TICKS_IN_SECOND));
         }
         
-        // TODO Logging
+        LogHelper.info(String.format(Strings.TEMPLATE_STRIKE_OUT_WITH_TIMED_PENALTY, playerName, GeneralHelper.formatTimeFromTicks(strikeMap.get(playerNameLowerCase).getTicksRemaining()), reason));
     }
 
     public void updateRegistry() {
@@ -111,7 +121,8 @@ public class StrikeRegistry {
             Strike strike = strikeMap.get(playerName);
 
             if (strike.getTicksRemaining() < Reference.TICKS_IN_SECOND) {
-                clearStrikes(playerName);
+                
+                clearStrikes(playerName, Strings.REASON_STRIKE_EXPIRATION);
             }
             else {
                 strikeMap.get(playerName).updateTicksRemainingBy(-Reference.TICKS_IN_SECOND);
@@ -119,10 +130,7 @@ public class StrikeRegistry {
         }
     }
 
-    public void printDebug() {
-
-        for (String playerName : strikeMap.keySet()) {
-            LogHelper.debug(String.format("Strike Registry Entry - Player %s, Strike Count %s, Ticks Remaining %s", playerName, strikeMap.get(playerName).getStrikeCount(), strikeMap.get(playerName).getTicksRemaining()));
-        }
+    public Map<String, Strike> getStrikeMap() {
+        return ImmutableMap.copyOf(strikeMap);
     }
 }
