@@ -7,11 +7,14 @@ import com.pahimar.chitchat.command.CommandHandler;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
+import com.pahimar.chitchat.proxy.IProxy;
+import com.pahimar.chitchat.strike.ConnectionHandler;
 import com.pahimar.chitchat.strike.StrikeRegistryTickHandler;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -35,6 +38,9 @@ public class ChitChat {
 
     @Instance(com.pahimar.chitchat.lib.Reference.MOD_ID)
     public static ChitChat instance;
+    
+    @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
+    public static IProxy proxy;
 
     @EventHandler
     public void invalidFingerprint(FMLFingerprintViolationEvent event) {
@@ -62,10 +68,13 @@ public class ChitChat {
         // Initialize the configuration 
         ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
         
-        // Registry the Strike Registry tick handler
+        // Register the Strike Registry tick handler
         TickRegistry.registerScheduledTickHandler(new StrikeRegistryTickHandler(), Side.SERVER);
 
         // Register the chat listener
         NetworkRegistry.instance().registerChatListener(new ChatListener());
+        
+        // Register the connection listener
+        NetworkRegistry.instance().registerConnectionHandler(new ConnectionHandler());
     }
 }

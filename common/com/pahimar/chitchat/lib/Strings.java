@@ -13,6 +13,9 @@ public class Strings {
     
     public static final String CENSOR_REPLACEMENT_TEXT = "chitchat:censor_replacement_text";
     
+    // Strike out message templates
+    public static final String STRIKEOUT_TIME_OUT_TEMPLATE = "[ChitChat] Player '%s' is in a time out for %s more seconds (Reason: Struck out)";
+    
     // Regex helper constants
     public static final String REGEX_WORD_DELIMITER = "\\b";
     public static final String REGEX_SPACE_CHARACTER = "\\s";

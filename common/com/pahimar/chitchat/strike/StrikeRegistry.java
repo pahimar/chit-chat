@@ -1,84 +1,128 @@
 package com.pahimar.chitchat.strike;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.pahimar.chitchat.configuration.Settings;
+import com.pahimar.chitchat.helper.LogHelper;
+import com.pahimar.chitchat.lib.Reference;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-@SideOnly(Side.SERVER)
-public class StrikeRegistry implements JsonSerializer<StrikeRegistry>, JsonDeserializer<StrikeRegistry> {
+public class StrikeRegistry {
 
     private static StrikeRegistry strikeRegistry = null;
-    
+
     private HashMap<String, Strike> strikeMap;
-    
+
     private StrikeRegistry() {
-        
+
+        strikeMap = new HashMap<String, Strike>();
     }
-    
+
     public static StrikeRegistry getInstance() {
-        
+
         if (strikeRegistry == null) {
             strikeRegistry = new StrikeRegistry();
-            strikeRegistry.strikeMap = new HashMap<String, Strike>();
         }
-        
-        return strikeRegistry; 
+
+        return strikeRegistry;
     }
-    
+
     public boolean hasStrikes(String playerName) {
-        
+
         return strikeMap.keySet().contains(playerName.toLowerCase());
     }
-    
+
     public int getStrikes(String playerName) {
-        
-        if (hasStrikes(playerName)) {
-            return strikeMap.get(playerName.toLowerCase()).getStrikeCount();
+
+        String playerNameLowerCase = playerName.toLowerCase();
+
+        if (hasStrikes(playerNameLowerCase)) {
+            return strikeMap.get(playerNameLowerCase).getStrikeCount();
         }
-        
+
         return 0;
     }
-    
+
     public int getTicksRemaining(String playerName) {
-        
-        if (strikeMap.keySet().contains(playerName.toLowerCase())) {
-            return strikeMap.get(playerName.toLowerCase()).getTicksRemaining();
+
+        String playerNameLowerCase = playerName.toLowerCase();
+
+        if (hasStrikes(playerNameLowerCase)) {
+            return strikeMap.get(playerNameLowerCase).getTicksRemaining();
         }
-        
+
         return 0;
     }
-    
+
     public void addStrike(String playerName) {
-        // TODO Add a strike to an existing mapping, or add a new one if an existing mapping doesn't exist
+
+        String playerNameLowerCase = playerName.toLowerCase();
+
+        if (hasStrikes(playerNameLowerCase)) {
+            if (getStrikes(playerNameLowerCase) < Settings.MAX_STRIKES_ALLOWED) {
+                strikeMap.get(playerNameLowerCase).updateStrikeCountBy(1);
+            }
+            else {
+                strikeMap.get(playerNameLowerCase).updateStrikeCountBy(Settings.MAX_STRIKES_ALLOWED);
+            }
+        }
+        else {
+            strikeMap.put(playerNameLowerCase, new Strike(playerNameLowerCase));
+        }
+        
+        // TODO Logging
     }
     
-    public void updateRegistry() {
+    public boolean isStruckOut(String playerName) {
         
+        String playerNameLowerCase = playerName.toLowerCase();
+        
+        if (hasStrikes(playerNameLowerCase)) {
+            return strikeMap.get(playerNameLowerCase).getStrikeCount() >= Settings.MAX_STRIKES_ALLOWED;
+        }
+        
+        return false;
+    }
+
+    public void clearStrikes(String playerName) {
+
+        if (hasStrikes(playerName)) {
+            strikeMap.remove(playerName.toLowerCase());
+            // TODO Logging
+        }
+    }
+    
+    public void strikeOut(String playerName) {
+        
+        String playerNameLowerCase = playerName.toLowerCase();
+
+        if (hasStrikes(playerNameLowerCase)) {
+            strikeMap.get(playerNameLowerCase).updateStrikeCountBy(Settings.MAX_STRIKES_ALLOWED);
+        }
+        else {
+            strikeMap.put(playerNameLowerCase, new Strike(playerNameLowerCase, Settings.MAX_STRIKES_ALLOWED, Settings.STRIKEOUT_ACTION_DURATION * Reference.TICKS_IN_SECOND));
+        }
+        
+        // TODO Logging
+    }
+
+    public void updateRegistry() {
+
         for (String playerName : strikeMap.keySet()) {
-            // TODO Update strike counts against players
+            Strike strike = strikeMap.get(playerName);
+
+            if (strike.getTicksRemaining() < Reference.TICKS_IN_SECOND) {
+                clearStrikes(playerName);
+            }
+            else {
+                strikeMap.get(playerName).updateTicksRemainingBy(-Reference.TICKS_IN_SECOND);
+            }
         }
     }
 
-    @Override
-    public StrikeRegistry deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public void printDebug() {
 
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public JsonElement serialize(StrikeRegistry src, Type typeOfSrc, JsonSerializationContext context) {
-
-        // TODO Auto-generated method stub
-        return null;
+        for (String playerName : strikeMap.keySet()) {
+            LogHelper.debug(String.format("Strike Registry Entry - Player %s, Strike Count %s, Ticks Remaining %s", playerName, strikeMap.get(playerName).getStrikeCount(), strikeMap.get(playerName).getTicksRemaining()));
+        }
     }
 }

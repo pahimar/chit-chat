@@ -1,13 +1,9 @@
 package com.pahimar.chitchat.strike;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.pahimar.chitchat.configuration.Settings;
 import com.pahimar.chitchat.lib.Reference;
 
 public class Strike {
-
-    private static Gson gsonSerializer = new Gson();
 
     private final String playerName;
     private int strikeCount;
@@ -15,9 +11,23 @@ public class Strike {
 
     public Strike(String playerName) {
 
-        this.playerName = playerName;
+        this.playerName = playerName.toLowerCase();
         strikeCount = 1;
         ticksRemaining = Settings.STRIKE_EXPIRATION_TIME * Reference.TICKS_IN_SECOND;
+    }
+
+    public Strike(String playerName, int strikeCount) {
+
+        this.playerName = playerName.toLowerCase();
+        this.strikeCount = strikeCount;
+        ticksRemaining = Settings.STRIKE_EXPIRATION_TIME * Reference.TICKS_IN_SECOND;
+    }
+    
+    public Strike(String playerName, int strikeCount, int ticksRemaining) {
+
+        this.playerName = playerName.toLowerCase();
+        this.strikeCount = strikeCount;
+        this.ticksRemaining = ticksRemaining;
     }
 
     public String getPlayerName() {
@@ -38,6 +48,13 @@ public class Strike {
     public void updateStrikeCountBy(int amount) {
 
         this.strikeCount = this.strikeCount + amount;
+        if (this.strikeCount >= Settings.MAX_STRIKES_ALLOWED) {
+            this.strikeCount = Settings.MAX_STRIKES_ALLOWED;
+            this.ticksRemaining = Settings.STRIKEOUT_ACTION_DURATION * Reference.TICKS_IN_SECOND;
+        }
+        else {
+            this.ticksRemaining = Settings.STRIKE_EXPIRATION_TIME * Reference.TICKS_IN_SECOND;
+        }
     }
 
     public int getTicksRemaining() {
@@ -53,23 +70,6 @@ public class Strike {
     public void updateTicksRemainingBy(int amount) {
 
         this.ticksRemaining = this.ticksRemaining + amount;
-    }
-
-    public static Strike createFromJson(String jsonSrike) {
-
-        try {
-            return gsonSerializer.fromJson(jsonSrike, Strike.class);
-        }
-        catch (JsonSyntaxException exception) {
-            // TODO Log something regarding the failed parse
-        }
-
-        return null;
-    }
-
-    public String toJson() {
-
-        return gsonSerializer.toJson(this);
     }
 
 }

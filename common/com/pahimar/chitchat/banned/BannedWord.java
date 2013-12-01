@@ -11,11 +11,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.JsonSyntaxException;
 import com.pahimar.chitchat.helper.BannedWordHelper;
 
 public class BannedWord implements JsonDeserializer<BannedWord>, JsonSerializer<BannedWord> {
 
-    private Gson gsonSerializer = (new GsonBuilder()).registerTypeAdapter(BannedWord.class, new BannedWord()).create();
+    private static Gson gsonSerializer = (new GsonBuilder()).registerTypeAdapter(BannedWord.class, new BannedWord()).create();
 
     private String bannedText;
     private boolean mustStartWith;
@@ -75,6 +76,22 @@ public class BannedWord implements JsonDeserializer<BannedWord>, JsonSerializer<
     public Pattern getPattern() {
 
         return bannedPattern;
+    }
+    
+    public static BannedWord createFromJson(String jsonBannedWord) {
+        
+        try {
+            return gsonSerializer.fromJson(jsonBannedWord, BannedWord.class);
+        }
+        catch (JsonSyntaxException exception) {
+            // TODO Log something regarding the failed parse
+        }
+
+        return null;
+    }
+    
+    public String toJson() {
+        return gsonSerializer.toJson(this);
     }
 
     @Override

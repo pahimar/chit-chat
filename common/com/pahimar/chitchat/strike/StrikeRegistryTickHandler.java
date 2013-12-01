@@ -6,10 +6,7 @@ import com.pahimar.chitchat.lib.Reference;
 
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-@SideOnly(Side.SERVER)
 public class StrikeRegistryTickHandler implements IScheduledTickHandler {
 
     @Override
