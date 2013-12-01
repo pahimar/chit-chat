@@ -13,14 +13,14 @@ public class Strike {
 
         this.playerName = playerName.toLowerCase();
         strikeCount = 1;
-        ticksRemaining = Settings.STRIKE_EXPIRATION_TIME * Reference.TICKS_IN_SECOND;
+        ticksRemaining = Settings.STRIKE_DURATION_TIME * Reference.TICKS_IN_SECOND;
     }
 
     public Strike(String playerName, int strikeCount) {
 
         this.playerName = playerName.toLowerCase();
         this.strikeCount = strikeCount;
-        ticksRemaining = Settings.STRIKE_EXPIRATION_TIME * Reference.TICKS_IN_SECOND;
+        ticksRemaining = Settings.STRIKE_DURATION_TIME * Reference.TICKS_IN_SECOND;
     }
     
     public Strike(String playerName, int strikeCount, int ticksRemaining) {
@@ -53,7 +53,7 @@ public class Strike {
             this.ticksRemaining = Settings.STRIKEOUT_ACTION_DURATION * Reference.TICKS_IN_SECOND;
         }
         else {
-            this.ticksRemaining = Settings.STRIKE_EXPIRATION_TIME * Reference.TICKS_IN_SECOND;
+            this.ticksRemaining = Settings.STRIKE_DURATION_TIME * Reference.TICKS_IN_SECOND;
         }
     }
 

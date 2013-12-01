@@ -15,12 +15,6 @@ public class ClientProxy implements IProxy {
     }
 
     @Override
-    public void handleChatDisabled(String playerName, String reason) {
-
-        // NOOP
-    }
-
-    @Override
     public void handleTimeOut(String playerName, String reason) {
 
         // NOOP

@@ -8,7 +8,6 @@ import net.minecraft.util.EnumChatFormatting;
 
 import com.pahimar.chitchat.configuration.Settings;
 import com.pahimar.chitchat.helper.GeneralHelper;
-import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
 import com.pahimar.chitchat.lib.Strings;
 import com.pahimar.chitchat.strike.StrikeRegistry;
@@ -40,12 +39,6 @@ public class ServerProxy implements IProxy {
             StrikeRegistry.getInstance().clearStrikes(playerName, Strings.REASON_STRIKEOUT_KICK);
             notifyAdmins(String.format("Kicking player '%s' (Reason: %s)", playerName, reason));
         }
-    }
-    
-    @Override
-    public void handleChatDisabled(String playerName, String reason) {
-
-        LogHelper.debug("Server - handle chat disabled");
     }
 
     @Override

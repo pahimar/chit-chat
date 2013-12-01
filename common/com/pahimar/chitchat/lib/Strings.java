@@ -25,7 +25,7 @@ public class Strings {
     
     // Strike actions
     public static final String ACTION_KICKED = "kicked";
-    public static final String ACTION_CHAT_DISABLED = "censored";
+    public static final String ACTION_CHAT_DISABLED = "chat disabled";
     public static final String ACTION_TIMED_OUT = "timed out";
     public static final String ACTION_BANNED = "banned";
     
@@ -44,6 +44,7 @@ public class Strings {
     public static final String TEMPLATE_STRIKES_CLEARED = "Player '%s' has had all strikes cleared (Reason: %s)";
     public static final String TEMPLATE_STRIKE_OUT_WITH_PENALTY = "Player '%s' has struck out and was %s (Reason: %s)";
     public static final String TEMPLATE_STRIKE_OUT_WITH_TIMED_PENALTY = "Player '%s' has struck out and will be penalized for %s (Reason: %s)";
+    public static final String TEMPLATE_STRIKE_OUT_WITH_TIMED_PENALTY_AND_ACTION = "Player '%s' has struck out and will be penalized for %s with the following penalty: %s (Reason: %s)";
     public static final String TEMPLATE_TIME_OUT_ATTEMPTED_JOIN = "[ChitChat] Player '%s' is timed out and prevented from joining the server again for another %s (Reason: Struck out)";
     
     // Regex helper constants
