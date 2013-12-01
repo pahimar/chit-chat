@@ -53,22 +53,21 @@ public class ChatListener implements IChatListener {
                             bannedWordBuilder.append(String.format("'%s' ", bannedWord));
                         }
                         
-                        // TODO String tokens
                         // Filter the banned words from chat
                         if (Settings.FILTER_MODE == Reference.FILTER_MODE_WORD_CENSOR) {
-                            LogHelper.info(String.format("Partially censored a message that was sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
+                            LogHelper.info(String.format(Strings.TEMPLATE_CENSOR_WORD_MESSAGE, netHandler.getPlayer().username, bannedWordBuilder.toString()));
                             packet3Chat.message = BannedWordHelper.censorPartialMessage(packet3Chat.message, true);
                         }
                         else if (Settings.FILTER_MODE == Reference.FILTER_MODE_LINE_CENSOR) {
-                            LogHelper.info(String.format("Completely censored a message that was sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
+                            LogHelper.info(String.format(Strings.TEMPLATE_CENSOR_LINE_MESSAGE, netHandler.getPlayer().username, bannedWordBuilder.toString()));
                             packet3Chat.message = BannedWordHelper.censorEntireMessage(packet3Chat.message, true);
                         }
                         else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE && Settings.FML_CAN_CANCEL_MESSAGES) {
-                            LogHelper.info(String.format("Stopped a message from being sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
+                            LogHelper.info(String.format(Strings.TEMPLATE_HIDE_MESSAGE, netHandler.getPlayer().username, bannedWordBuilder.toString()));
                             packet3Chat = null;
                         }
                         else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE && !Settings.FML_CAN_CANCEL_MESSAGES) {
-                            LogHelper.info(String.format("Completely censored a message that was sent from player '%s' for using banned words: %s", netHandler.getPlayer().username, bannedWordBuilder.toString()));
+                            LogHelper.info(String.format(Strings.TEMPLATE_CENSOR_LINE_MESSAGE, netHandler.getPlayer().username, bannedWordBuilder.toString()));
                             packet3Chat.message = BannedWordHelper.censorEntireMessage(packet3Chat.message, true);
                         }
     
@@ -82,7 +81,7 @@ public class ChatListener implements IChatListener {
                             int strikeCount = StrikeRegistry.getInstance().getStrikes(netHandler.getPlayer().username);
                             
                             if (strikeCount < Settings.MAX_STRIKES_ALLOWED) {
-                                netHandler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText(String.format("<%s-Server> Strike %s of %s!", Reference.MOD_NAME, strikeCount, Settings.MAX_STRIKES_ALLOWED)).setColor(EnumChatFormatting.GRAY));
+                                netHandler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText(String.format(Strings.TEMPLATE_STRIKE_COUNT_MESSAGE, Reference.MOD_NAME, strikeCount, Settings.MAX_STRIKES_ALLOWED)).setColor(EnumChatFormatting.GRAY));
                             }
                             // Player just struck out
                             else {
@@ -93,7 +92,7 @@ public class ChatListener implements IChatListener {
                                 }
                                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_DISABLE_CHAT) {
                                     LogHelper.info(String.format(Strings.TEMPLATE_STRIKE_OUT_WITH_TIMED_PENALTY, netHandler.getPlayer().username, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE, Strings.ACTION_CHAT_DISABLED));
-                                    netHandler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText(String.format("<%s-Server> Your chat has been disabled for %s (Reason: %s)", Reference.MOD_NAME, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE)).setColor(EnumChatFormatting.GRAY));
+                                    netHandler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText(String.format(Strings.TEMPLATE_CHAT_DISABLED_MESSAGE, Reference.MOD_NAME, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE)).setColor(EnumChatFormatting.GRAY));
                                 }
                                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_TIME_OUT) {
                                     LogHelper.info(String.format(Strings.TEMPLATE_STRIKE_OUT_WITH_TIMED_PENALTY, netHandler.getPlayer().username, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE, Strings.ACTION_TIMED_OUT));
@@ -115,7 +114,7 @@ public class ChatListener implements IChatListener {
                 }
                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_DISABLE_CHAT) {
 
-                    netHandler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText(String.format("<%s-Server> Not allowed to say anything for another %s (Reason: %s)", Reference.MOD_NAME, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE)).setColor(EnumChatFormatting.GRAY));
+                    netHandler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText(String.format(Strings.TEMPLATE_CHAT_STILL_DISABLED_MESSAGE, Reference.MOD_NAME, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE)).setColor(EnumChatFormatting.GRAY));
                     
                     if (Settings.FML_CAN_CANCEL_MESSAGES) {
                         packet3Chat = null;
