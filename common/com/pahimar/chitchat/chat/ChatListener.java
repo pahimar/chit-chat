@@ -92,7 +92,8 @@ public class ChatListener implements IChatListener {
                                     ChitChat.proxy.handleKick(netHandler.getPlayer().username, String.format(Strings.TEMPLATE_STRUCK_OUT_KICK_MESSAGE, Reference.MOD_NAME, Strings.REASON_STRIKEOUT_WORD_USAGE));
                                 }
                                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_DISABLE_CHAT) {
-                                    // TODO Notify the player that they are now timed out for X length of time
+                                    LogHelper.info(String.format(Strings.TEMPLATE_STRIKE_OUT_WITH_TIMED_PENALTY, netHandler.getPlayer().username, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE, Strings.ACTION_CHAT_DISABLED));
+                                    netHandler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText(String.format("<%s-Server> Your chat has been disabled for %s (Reason: %s)", Reference.MOD_NAME, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE)).setColor(EnumChatFormatting.GRAY));
                                 }
                                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_TIME_OUT) {
                                     LogHelper.info(String.format(Strings.TEMPLATE_STRIKE_OUT_WITH_TIMED_PENALTY, netHandler.getPlayer().username, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE, Strings.ACTION_TIMED_OUT));
@@ -113,11 +114,13 @@ public class ChatListener implements IChatListener {
                     // NOOP
                 }
                 else if (Settings.STRIKEOUT_ACTION == Reference.ACTION_DISABLE_CHAT) {
-                    // TODO Notify the player that they are timed out for X length of time longer
-                    if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE && Settings.FML_CAN_CANCEL_MESSAGES) {
+
+                    netHandler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText(String.format("<%s-Server> Not allowed to say anything for another %s (Reason: %s)", Reference.MOD_NAME, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.getPlayer().username)), Strings.REASON_BANNED_WORD_USAGE)).setColor(EnumChatFormatting.GRAY));
+                    
+                    if (Settings.FML_CAN_CANCEL_MESSAGES) {
                         packet3Chat = null;
                     }
-                    else if (Settings.FILTER_MODE == Reference.FILTER_MODE_HIDE && !Settings.FML_CAN_CANCEL_MESSAGES) {
+                    else {
                         packet3Chat.message = BannedWordHelper.censorEntireMessage(packet3Chat.message, true);
                     }
                 }
