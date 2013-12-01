@@ -1,6 +1,7 @@
 package com.pahimar.chitchat.strike;
 
 import com.pahimar.chitchat.configuration.Settings;
+import com.pahimar.chitchat.helper.GeneralHelper;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
 import com.pahimar.chitchat.lib.Strings;
@@ -38,8 +39,8 @@ public class ConnectionHandler implements IConnectionHandler {
             if (Settings.STRIKE_SYSTEM_ENABLED) {
                 if (Settings.STRIKEOUT_ACTION == Reference.ACTION_TIME_OUT) {
                     if (StrikeRegistry.getInstance().isStruckOut(netHandler.clientUsername)) {
-                        LogHelper.info(String.format(Strings.STRIKEOUT_TIME_OUT_TEMPLATE, netHandler.clientUsername, StrikeRegistry.getInstance().getTicksRemaining(netHandler.clientUsername) / Reference.TICKS_IN_SECOND));
-                        return String.format(Strings.STRIKEOUT_TIME_OUT_TEMPLATE, netHandler.clientUsername, StrikeRegistry.getInstance().getTicksRemaining(netHandler.clientUsername) / Reference.TICKS_IN_SECOND);
+                        LogHelper.info(String.format(Strings.STRIKEOUT_TIME_OUT_TEMPLATE, netHandler.clientUsername, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.clientUsername))));
+                        return String.format(Strings.STRIKEOUT_TIME_OUT_TEMPLATE, netHandler.clientUsername, GeneralHelper.formatTimeFromTicks(StrikeRegistry.getInstance().getTicksRemaining(netHandler.clientUsername)));
                     }
                 }
             }

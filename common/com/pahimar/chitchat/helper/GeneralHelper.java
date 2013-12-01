@@ -25,5 +25,11 @@ public class GeneralHelper {
         
         return false;
     }
+    
+    public static String formatTimeFromTicks(int ticks) {
+        
+        // TODO Finish this for logging
+        return "";
+    }
 
 }

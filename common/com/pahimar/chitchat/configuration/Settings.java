@@ -70,6 +70,6 @@ public class Settings {
     
     public static int STRIKEOUT_ACTION_DURATION;
     public static final String STRIKEOUT_ACTION_DURATION_CONFIGNAME = "exceeds_max_strikes_action_duration";
-    public static final int STRIKEOUT_ACTION_DURATION_DEFAULT = 60;
+    public static final int STRIKEOUT_ACTION_DURATION_DEFAULT = 300;
     public static final String STRIKEOUT_ACTION_DURATION_COMMENT = "How long the action lasts for when a player exceeds the max number of allowed strikes, in seconds (default is 60)";
 }
