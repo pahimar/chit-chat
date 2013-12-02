@@ -3,7 +3,6 @@ package com.pahimar.chitchat;
 import java.io.File;
 
 import com.pahimar.chitchat.chat.ChatListener;
-import com.pahimar.chitchat.command.CommandHandler;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
@@ -56,7 +55,8 @@ public class ChitChat {
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
 
-        CommandHandler.initCommands(event);
+        // TODO Finish this
+        // CommandHandler.initCommands(event);
     }
 
     @EventHandler

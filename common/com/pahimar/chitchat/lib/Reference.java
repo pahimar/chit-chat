@@ -21,7 +21,7 @@ public class Reference {
     public static final String MOD_NAME = "ChitChat";
     public static final String SERVER_PROXY_CLASS = "com.pahimar.chitchat.proxy.ServerProxy";
     public static final String CLIENT_PROXY_CLASS = "com.pahimar.chitchat.proxy.ClientProxy";
-    public static final String VERSION_NUMBER = "@VERSION@ (build @BUILD_NUMBER@)";
+    public static final String VERSION_NUMBER = "@VERSION@.@BUILD_NUMBER@";
     public static final String FINGERPRINT = "@FINGERPRINT@";
     
     /* Misc constants */
