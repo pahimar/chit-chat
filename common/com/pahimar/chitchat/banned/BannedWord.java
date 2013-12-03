@@ -17,7 +17,7 @@ import com.pahimar.chitchat.helper.BannedWordHelper;
 
 public class BannedWord implements JsonDeserializer<BannedWord>, JsonSerializer<BannedWord> {
 
-    private static Gson gsonSerializer = (new GsonBuilder()).registerTypeAdapter(BannedWord.class, new BannedWord()).create();
+    public static Gson gsonSerializer = (new GsonBuilder()).registerTypeAdapter(BannedWord.class, new BannedWord()).create();
 
     private String bannedText;
     private boolean mustStartWith;

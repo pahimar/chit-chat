@@ -5,8 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.google.common.collect.ImmutableMap;
 import com.pahimar.chitchat.configuration.Settings;
@@ -47,10 +47,13 @@ public class BannedWordRegistry {
         return ImmutableMap.copyOf(bannedWordMap);
     }
     
+    /**
+     * @see http://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/com/google/gson/stream/JsonWriter.html
+     */
     private static void loadBannedWordMap() {
         
         if (bannedWordMap == null) {
-            bannedWordMap = new HashMap<String, BannedWord>();
+            bannedWordMap = new TreeMap<String, BannedWord>();
         }
         
         if (Settings.DEFAULT_BAN_LIST_ENABLED) {

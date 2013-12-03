@@ -1,7 +1,17 @@
 package com.pahimar.chitchat;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonWriter;
+import com.pahimar.chitchat.banned.BannedWord;
+import com.pahimar.chitchat.banned.BannedWordRegistry;
 import com.pahimar.chitchat.chat.ChatListener;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
 import com.pahimar.chitchat.helper.LogHelper;
@@ -76,5 +86,47 @@ public class ChitChat {
         
         // Register the connection listener
         NetworkRegistry.instance().registerConnectionHandler(new ConnectionHandler());
+        
+        testJson(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
+    }
+
+    /**
+     * Just a test method at the moment
+     * @see http://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/com/google/gson/stream/JsonWriter.html
+     */
+    private static void testJson(String path) {
+        
+        String filePath = path + "bannedWords.json";
+        JsonWriter jsonWriter = null;
+        
+        try {
+            
+            jsonWriter = new JsonWriter(new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"));
+            jsonWriter.setIndent("    ");
+            
+            Gson gson = new GsonBuilder().create();
+            jsonWriter.beginArray();
+            for (String bannedWord : BannedWordRegistry.getBannedWordMap().keySet()) {
+                BannedWord bannedWordObject = BannedWordRegistry.getBannedWordMap().get(bannedWord);
+                jsonWriter.beginObject();
+                jsonWriter.name("bannedText").value(bannedWordObject.getBannedText());
+                jsonWriter.name("mustStartWith").value(bannedWordObject.mustStartWithBannedText());
+                jsonWriter.name("mustEndWith").value(bannedWordObject.mustEndWithBannedText());
+                jsonWriter.endObject();
+            }
+            jsonWriter.endArray();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                jsonWriter.close();
+            }
+            catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 }
