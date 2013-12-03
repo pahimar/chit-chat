@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
@@ -77,9 +78,9 @@ public class BannedWord implements JsonDeserializer<BannedWord>, JsonSerializer<
 
         return bannedPattern;
     }
-    
+
     public static BannedWord createFromJson(String jsonBannedWord) {
-        
+
         try {
             return gsonSerializer.fromJson(jsonBannedWord, BannedWord.class);
         }
@@ -89,22 +90,62 @@ public class BannedWord implements JsonDeserializer<BannedWord>, JsonSerializer<
 
         return null;
     }
-    
+
     public String toJson() {
+
         return gsonSerializer.toJson(this);
     }
 
     @Override
-    public JsonElement serialize(BannedWord src, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(BannedWord bannedWord, Type type, JsonSerializationContext context) {
 
-        // TODO Auto-generated method stub
-        return null;
+        JsonObject jsonBannedWord = new JsonObject();
+
+        if (bannedWord != null) {
+            jsonBannedWord.addProperty("bannedText", bannedWord.bannedText);
+            jsonBannedWord.addProperty("mustStartWith", bannedWord.mustStartWith);
+            jsonBannedWord.addProperty("mustEndWith", bannedWord.mustEndWith);
+        }
+
+        return jsonBannedWord;
     }
 
     @Override
-    public BannedWord deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public BannedWord deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
 
-        // TODO Auto-generated method stub
+        if (jsonElement.isJsonObject()) {
+            
+            JsonObject jsonObject = (JsonObject) jsonElement;
+            
+            String bannedText;
+            boolean mustStartWith = true;
+            boolean mustEndWith = true;
+            
+            if (jsonObject.get("bannedText") != null) {
+
+                bannedText = jsonObject.get("bannedText").getAsString();
+                
+                if (bannedText.length() > 0) {
+                    
+                    if (jsonObject.get("mustStartWith") != null) {
+                        mustStartWith = jsonObject.get("mustStartWith").getAsBoolean();
+                    }
+                    
+                    if (jsonObject.get("mustEndWith") != null) {
+                        mustStartWith = jsonObject.get("mustEndWith").getAsBoolean();
+                    }
+                    
+                    return new BannedWord(bannedText, mustStartWith, mustEndWith);
+                }
+                else {
+                    throw new JsonParseException("Banned word cannot be 0 characters in length");
+                }
+            }
+            else {
+                throw new JsonParseException(String.format("No banned word found for the JsonElement", jsonElement));
+            }
+        }
+        
         return null;
     }
 
