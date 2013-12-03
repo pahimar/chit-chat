@@ -89,6 +89,7 @@ public class ChitChat {
     /**
      * Just a test method at the moment
      * @see http://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/com/google/gson/stream/JsonWriter.html
+     * @see http://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/com/google/gson/stream/JsonReader.html
      */
     private static void testJson(String path) {
         
@@ -119,7 +120,6 @@ public class ChitChat {
                 jsonWriter.close();
             }
             catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
