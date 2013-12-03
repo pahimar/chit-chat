@@ -4,11 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonWriter;
 import com.pahimar.chitchat.banned.BannedWord;
 import com.pahimar.chitchat.banned.BannedWordRegistry;
@@ -104,7 +100,6 @@ public class ChitChat {
             jsonWriter = new JsonWriter(new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"));
             jsonWriter.setIndent("    ");
             
-            Gson gson = new GsonBuilder().create();
             jsonWriter.beginArray();
             for (String bannedWord : BannedWordRegistry.getBannedWordMap().keySet()) {
                 BannedWord bannedWordObject = BannedWordRegistry.getBannedWordMap().get(bannedWord);
