@@ -27,9 +27,9 @@ public class BannedWordHelper {
         
         if (isServer) {
             
-            for (String bannedWordKey : BannedWordRegistry.getBannedWordMap().keySet()) {
+            for (BannedWord bannedWord : BannedWordRegistry.getInstance().getBannedWordList()) {
                 
-                Pattern bannedPattern = BannedWordRegistry.getBannedWordMap().get(bannedWordKey).getPattern();
+                Pattern bannedPattern = bannedWord.getPattern();
 
                 if (bannedPattern != null) {
                     Matcher matcher = bannedPattern.matcher(message);
@@ -48,9 +48,9 @@ public class BannedWordHelper {
             
             if (customChatMessage.using.length >= 2) {
                 for (int i = 1; i < customChatMessage.using.length; i++) {
-                    for (String bannedWordKey : BannedWordRegistry.getBannedWordMap().keySet()) {
+                    for (BannedWord bannedWord : BannedWordRegistry.getInstance().getBannedWordList()) {
                         
-                        Pattern bannedPattern = BannedWordRegistry.getBannedWordMap().get(bannedWordKey).getPattern();
+                        Pattern bannedPattern = bannedWord.getPattern();
 
                         if (bannedPattern != null) {
                             Matcher matcher = bannedPattern.matcher(customChatMessage.using[i]);
@@ -98,9 +98,9 @@ public class BannedWordHelper {
         line = line.toLowerCase();
         line = StringUtils.normalizeSpace(line);
         
-        for (String bannedWordKey : BannedWordRegistry.getBannedWordMap().keySet()) {
+        for (BannedWord bannedWord : BannedWordRegistry.getInstance().getBannedWordList()) {
             
-            Pattern bannedPattern = BannedWordRegistry.getBannedWordMap().get(bannedWordKey).getPattern();
+            Pattern bannedPattern = bannedWord.getPattern();
 
             if (bannedPattern != null) {
                 Matcher matcher = bannedPattern.matcher(line);
@@ -121,9 +121,7 @@ public class BannedWordHelper {
         line = line.toLowerCase();
         line = StringUtils.normalizeSpace(line);
         
-        for (String bannedWordKey : BannedWordRegistry.getBannedWordMap().keySet()) {
-            
-            BannedWord bannedWord = BannedWordRegistry.getBannedWordMap().get(bannedWordKey);
+        for (BannedWord bannedWord : BannedWordRegistry.getInstance().getBannedWordList()) {
             
             if (bannedWord.getPattern() != null) {
                 Matcher matcher = bannedWord.getPattern().matcher(line);

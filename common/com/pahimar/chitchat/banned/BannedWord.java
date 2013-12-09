@@ -18,7 +18,7 @@ public class BannedWord {
 
     public BannedWord(String bannedText, boolean mustStartWith, boolean mustEndWith) {
 
-        this.bannedText = bannedText;
+        this.bannedText = bannedText.toLowerCase();
         this.mustStartWith = mustStartWith;
         this.mustEndWith = mustEndWith;
         this.bannedPattern = BannedWordHelper.generatePatternFromBannedWord(this);
@@ -60,5 +60,22 @@ public class BannedWord {
     public Pattern getPattern() {
 
         return bannedPattern;
+    }
+    
+    @Override
+    public String toString() {
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        
+        if (!mustStartWith) {
+            stringBuilder.append("*");
+        }
+        
+        stringBuilder.append(bannedText);
+        
+        if (!mustEndWith) {
+            stringBuilder.append("*");
+        }
+        return String.format("BannedWord[%s]", stringBuilder.toString());
     }
 }

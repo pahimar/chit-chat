@@ -1,15 +1,10 @@
 package com.pahimar.chitchat;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 
-import com.google.gson.stream.JsonWriter;
-import com.pahimar.chitchat.banned.BannedWord;
-import com.pahimar.chitchat.banned.BannedWordRegistry;
 import com.pahimar.chitchat.chat.ChatListener;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
+import com.pahimar.chitchat.configuration.Settings;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
 import com.pahimar.chitchat.proxy.IProxy;
@@ -70,9 +65,12 @@ public class ChitChat {
 
         // Initialize the log helper
         LogHelper.init();
+        
+        // Set the config folder path
+        Settings.CONFIG_DIRECTORY_PATH = event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator;
 
         // Initialize the configuration 
-        ConfigurationHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
+        ConfigurationHandler.init(Settings.CONFIG_DIRECTORY_PATH);
         
         // Register the Strike Registry tick handler
         TickRegistry.registerScheduledTickHandler(new StrikeRegistryTickHandler(), Side.SERVER);
@@ -82,46 +80,5 @@ public class ChitChat {
         
         // Register the connection listener
         NetworkRegistry.instance().registerConnectionHandler(new ConnectionHandler());
-        
-        testJson(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.MOD_ID.toLowerCase() + File.separator);
-    }
-
-    /**
-     * Just a test method at the moment
-     * @see http://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/com/google/gson/stream/JsonWriter.html
-     * @see http://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/com/google/gson/stream/JsonReader.html
-     */
-    private static void testJson(String path) {
-        
-        String filePath = path + "bannedWords.json";
-        JsonWriter jsonWriter = null;
-        
-        try {
-            
-            jsonWriter = new JsonWriter(new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"));
-            jsonWriter.setIndent("    ");
-            
-            jsonWriter.beginArray();
-            for (String bannedWord : BannedWordRegistry.getBannedWordMap().keySet()) {
-                BannedWord bannedWordObject = BannedWordRegistry.getBannedWordMap().get(bannedWord);
-                jsonWriter.beginObject();
-                jsonWriter.name("bannedText").value(bannedWordObject.getBannedText());
-                jsonWriter.name("mustStartWith").value(bannedWordObject.mustStartWithBannedText());
-                jsonWriter.name("mustEndWith").value(bannedWordObject.mustEndWithBannedText());
-                jsonWriter.endObject();
-            }
-            jsonWriter.endArray();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                jsonWriter.close();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

@@ -19,6 +19,11 @@ public class Settings {
     public static boolean FML_CAN_CANCEL_MESSAGES;
     
     /*
+     *  
+     */
+    public static String CONFIG_DIRECTORY_PATH;
+    
+    /*
      *  Filter mode
      */
     public static int FILTER_MODE;
