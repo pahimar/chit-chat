@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import com.pahimar.chitchat.ChitChat;
 import com.pahimar.chitchat.configuration.Settings;
+import com.pahimar.chitchat.helper.FileHelper;
 import com.pahimar.chitchat.helper.JsonFileHelper;
+import com.pahimar.chitchat.helper.LogHelper;
+import com.pahimar.chitchat.lib.Reference;
 
 /**
  * ChitChat
@@ -26,8 +30,14 @@ public class BannedWordRegistry {
         
         bannedWordList = new ArrayList<BannedWord>();
         
+        // If the default banned word list is enabled, load it
         if (Settings.DEFAULT_BAN_LIST_ENABLED) {
-            // TODO Load default banned word file
+            
+            List<BannedWord> defaultBannedWords = JsonFileHelper.readBannedWordsFromFile(ChitChat.instance.getClass().getResourceAsStream(Reference.DEFAULT_BANNEDWORDS_FILE_LOCATION));
+            
+            for (BannedWord bannedWord : defaultBannedWords) {
+                bannedWordList.add(bannedWord);
+            }
         }
         
         // TODO Load simple banned word file
@@ -58,52 +68,4 @@ public class BannedWordRegistry {
         
         return JsonFileHelper.readBannedWordsFromFile(Settings.CONFIG_DIRECTORY_PATH + "/bannedWords/advanced.json");
     }
-    
-    /**
-     * @see http://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/com/google/gson/stream/JsonWriter.html
-     */
-//    private static void loadBannedWordMap() {
-//        
-//        if (bannedWordMap == null) {
-//            bannedWordMap = new TreeMap<String, BannedWord>();
-//        }
-//        
-//        if (Settings.DEFAULT_BAN_LIST_ENABLED) {
-//            
-//            InputStream inputStream = null; 
-//            BufferedReader reader = null;
-//            
-//            try {
-//                inputStream = bannedWordRegistry.getClass().getResourceAsStream(Reference.DEFAULT_BLACKLIST_FILE_LOCATION);
-//                
-//                if (inputStream != null) {
-//                    reader = new BufferedReader(new InputStreamReader(inputStream));
-//                    String line = null;
-//                    
-//                    while ((line = reader.readLine()) != null) {
-//                        if (!bannedWordMap.containsKey(line.toLowerCase())) {
-//                            bannedWordMap.put(line.toLowerCase(), new BannedWord(line.toLowerCase()));
-//                        }
-//                    }
-//                }
-//            }
-//            catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//            catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            finally {
-//                try {
-//                    inputStream.close();
-//                    reader.close();
-//                }
-//                catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        
-//        // TODO Load in custom banned words list from external file
-//    }
 }

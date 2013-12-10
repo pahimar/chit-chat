@@ -2,9 +2,11 @@ package com.pahimar.chitchat;
 
 import java.io.File;
 
+import com.pahimar.chitchat.banned.BannedWordRegistry;
 import com.pahimar.chitchat.chat.ChatListener;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
 import com.pahimar.chitchat.configuration.Settings;
+import com.pahimar.chitchat.helper.JsonFileHelper;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
 import com.pahimar.chitchat.proxy.IProxy;
@@ -18,6 +20,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -80,5 +83,14 @@ public class ChitChat {
         
         // Register the connection listener
         NetworkRegistry.instance().registerConnectionHandler(new ConnectionHandler());
+        
+        BannedWordRegistry.getInstance();
+    }
+    
+    @EventHandler
+    public void serverShutdown(FMLServerStoppedEvent event) {
+        
+        // TODO Serialize the custom words to a single file
+        //JsonFileHelper.writeBannedWordsToFile(Settings.CONFIG_DIRECTORY_PATH + "/bannedWords/default_banned_words.json", BannedWordRegistry.getInstance().getBannedWordList());
     }
 }
