@@ -81,14 +81,14 @@
 	</target>
 
 	<target name="sign_jar">
-		<signjar jar="${environment.release_location}/MC ${build.minecraft_version}/${build.mod_version}.${build.build_number}/chitchat-universal-${build.mod_version}.${build.build_number}.jar" keystore="${private.keystore_location}" alias="${private.keystore_user_alias}" storepass="${private.keystore_user_password}" />
+		<signjar jar="${environment.release_location}/MC ${build.minecraft_version}/${build.mod_version}.${build.build_number}/ChitChat-${build.mod_version}.${build.build_number}.jar" keystore="${private.keystore_location}" alias="${private.keystore_user_alias}" storepass="${private.keystore_user_password}" />
 	</target>
 
 	<target name="build" depends="clean, increment_build_number, prep, recompile, reobfuscate">
 
 		<!-- Build the jar -->
 		<mkdir dir="${environment.release_location}/MC ${build.minecraft_version}/${build.mod_version}.${build.build_number}" />
-		<jar destfile="${environment.release_location}/MC ${build.minecraft_version}/${build.mod_version}.${build.build_number}/chitchat-universal-${build.mod_version}.${build.build_number}.jar">
+		<jar destfile="${environment.release_location}/MC ${build.minecraft_version}/${build.mod_version}.${build.build_number}/ChitChat-${build.mod_version}.${build.build_number}.jar">
 			<fileset dir="${environment.mcp_location}/src/minecraft/" includes="mcmod.info" />
 			<fileset dir="${environment.mcp_location}/src/minecraft/" includes="pack.mcmeta" />
 			<fileset dir="${environment.mcp_location}/reobf/minecraft" />
@@ -103,7 +103,7 @@
 
 		<!-- Build the jar -->
 		<mkdir dir="${environment.release_location}/MC ${build.minecraft_version}/${build.mod_version}.${build.build_number}" />
-		<jar destfile="${environment.release_location}/MC ${build.minecraft_version}/${build.mod_version}.${build.build_number}/chitchat-universal-${build.mod_version}.${build.build_number}.jar">
+		<jar destfile="${environment.release_location}/MC ${build.minecraft_version}/${build.mod_version}.${build.build_number}/ChitChat-${build.mod_version}.${build.build_number}.jar">
 			<fileset dir="${environment.mcp_location}/src/minecraft/" includes="mcmod.info" />
 			<fileset dir="${environment.mcp_location}/src/minecraft/" includes="pack.mcmeta" />
 			<fileset dir="${environment.mcp_location}/reobf/minecraft" />
