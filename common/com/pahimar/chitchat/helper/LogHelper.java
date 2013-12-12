@@ -27,46 +27,91 @@ public class LogHelper {
 
     public static void log(Level logLevel, Object object) {
 
-        logger.log(logLevel, object.toString());
+        if (object != null) {
+            logger.log(logLevel, object.toString());
+        }
+        else {
+            logger.log(logLevel, "null");
+        }
     }
 
     public static void severe(Object object) {
 
-        log(Level.SEVERE, object.toString());
+        if (object != null) {
+            log(Level.SEVERE, object.toString());
+        }
+        else {
+            log(Level.SEVERE, "null");
+        }
     }
 
     public static void debug(Object object) {
 
-        log(Level.WARNING, "[DEBUG] " + object.toString());
+        if (object != null) {
+            log(Level.WARNING, "[DEBUG] " + object.toString());
+        }
+        else {
+            log(Level.WARNING, "null");
+        }
     }
 
     public static void warning(Object object) {
 
-        log(Level.WARNING, object.toString());
+        if (object != null) {
+            log(Level.WARNING, object.toString());
+        }
+        else {
+            log(Level.WARNING, "null");
+        }
     }
 
     public static void info(Object object) {
 
-        log(Level.INFO, object.toString());
+        if (object != null) {
+            log(Level.INFO, object.toString());
+        }
+        else {
+            log(Level.INFO, "null");
+        }
     }
 
     public static void config(Object object) {
 
-        log(Level.CONFIG, object.toString());
+        if (object != null) {
+            log(Level.CONFIG, object.toString());
+        }
+        else {
+            log(Level.CONFIG, "null");
+        }
     }
 
     public static void fine(Object object) {
 
-        log(Level.FINE, object.toString());
+        if (object != null) {
+            log(Level.FINE, object.toString());
+        }
+        else {
+            log(Level.FINE, "null");
+        }
     }
 
     public static void finer(Object object) {
 
-        log(Level.FINER, object.toString());
+        if (object != null) {
+            log(Level.FINER, object.toString());
+        }
+        else {
+            log(Level.FINER, "null");
+        }
     }
 
     public static void finest(Object object) {
 
-        log(Level.FINEST, object.toString());
+        if (object != null) {
+            log(Level.FINEST, object.toString());
+        }
+        else {
+            log(Level.FINEST, "null");
+        }
     }
 }

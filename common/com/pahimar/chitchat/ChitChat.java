@@ -8,6 +8,7 @@ import java.util.List;
 import com.pahimar.chitchat.banned.BannedWord;
 import com.pahimar.chitchat.banned.BannedWordRegistry;
 import com.pahimar.chitchat.chat.ChatListener;
+import com.pahimar.chitchat.command.CommandHandler;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
 import com.pahimar.chitchat.configuration.Settings;
 import com.pahimar.chitchat.helper.FileHelper;
@@ -64,8 +65,7 @@ public class ChitChat {
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
 
-        // TODO Finish this
-        // CommandHandler.initCommands(event);
+        CommandHandler.initCommands(event);
     }
 
     @EventHandler

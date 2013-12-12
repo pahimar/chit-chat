@@ -72,6 +72,7 @@ public class ChatListener implements IChatListener {
                         }
     
                         // Notify the player that they said something that is banned, and what they said
+                        // TODO Decide if this should be a config setting or not
                         netHandler.getPlayer().sendChatToPlayer(ChatMessageComponent.createFromText(String.format("<%s-Server> Not allowed to say the following words on this server: %s", Reference.MOD_NAME, bannedWordBuilder.toString())).setColor(EnumChatFormatting.GRAY));
                         
                         // Perform whatever strikes are necessary, if the strike system is enabled
@@ -152,7 +153,6 @@ public class ChatListener implements IChatListener {
                 if (BannedWordHelper.checkForBannedWords(packet3Chat.message)) {
                     
                     if (Settings.FILTER_MODE == Reference.FILTER_MODE_WORD_CENSOR) {
-                        // TODO Localize the message and format
                         packet3Chat.message = BannedWordHelper.censorPartialMessage(packet3Chat.message, false);
                     }
                     else if (Settings.FILTER_MODE == Reference.FILTER_MODE_LINE_CENSOR) {

@@ -15,6 +15,7 @@ public class CommandHandler {
 
     public static void initCommands(FMLServerStartingEvent event) {
 
-        event.registerServerCommand(new CommandChitChat());
+        event.registerServerCommand(new CommandChitChatClient());
+        event.registerServerCommand(new CommandChitChatServer());
     }
 }

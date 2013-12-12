@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.Gson;
 import com.pahimar.chitchat.banned.BannedWord;
 import com.pahimar.chitchat.banned.BannedWordRegistry;
-import com.pahimar.chitchat.chat.message.CensoredChatMessage;
 import com.pahimar.chitchat.chat.message.CustomChatMessage;
 import com.pahimar.chitchat.configuration.Settings;
 import com.pahimar.chitchat.lib.Reference;
@@ -74,22 +73,24 @@ public class BannedWordHelper {
             return Settings.CENSOR_REPLACEMENT_TEXT;
         }
         else {
-            
-            CensoredChatMessage censoredChatMessage = gson.fromJson(message, CensoredChatMessage.class);
 
+            CustomChatMessage customChatMessage = gson.fromJson(message, CustomChatMessage.class);
+            
             String[] chatMessageBody = new String[2];
-            if (censoredChatMessage.using.length > 0) {
-                chatMessageBody[0] = censoredChatMessage.using[0];
-            }
-            else {
-                chatMessageBody[0] = Reference.MOD_NAME;
+            if (customChatMessage.using != null) {
+                if (customChatMessage.using.length > 0) {
+                    chatMessageBody[0] = customChatMessage.using[0];
+                }
+                else {
+                    chatMessageBody[0] = Reference.MOD_NAME;
+                }
             }
             chatMessageBody[1] = StatCollector.translateToLocal(Strings.CENSOR_REPLACEMENT_TEXT);
 
-            censoredChatMessage.translate = Reference.CHAT_TEXT_MESSAGE_TYPE;
-            censoredChatMessage.using = chatMessageBody;
-
-            return ChatMessageComponent.createFromJson(gson.toJson(censoredChatMessage)).toJson();
+            customChatMessage.translate = Reference.CHAT_TEXT_MESSAGE_TYPE;
+            customChatMessage.using = chatMessageBody;
+            
+            return ChatMessageComponent.createFromJson(gson.toJson(customChatMessage)).toJson();
         }
     }
     
