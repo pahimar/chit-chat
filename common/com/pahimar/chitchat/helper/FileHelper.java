@@ -1,27 +1,110 @@
 package com.pahimar.chitchat.helper;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import com.pahimar.chitchat.ChitChat;
 import com.pahimar.chitchat.banned.BannedWord;
 import com.pahimar.chitchat.lib.Reference;
 
 
 public class FileHelper {
 
-    public static void writeBannedWordsToFile(String filePath, Map<String, BannedWord> bannedWordMap) {
+    public static void writeBannedWordsToFile(String filePath, List<BannedWord> bannedWordList) {
         
+        BufferedWriter bufferedWriter = null;
+        
+        try {
+            
+            bufferedWriter = new BufferedWriter(new FileWriter(filePath));
+            
+            for (BannedWord bannedWord : bannedWordList) {
+                bufferedWriter.write(bannedWord.getBannedText());
+                bufferedWriter.newLine();
+            }
+        }
+        catch (FileNotFoundException e) {
+            
+            if (filePath.startsWith(Reference.BANNED_WORDS_DIRECTORY_LOCATION)) {
+                File directory = new File(Reference.BANNED_WORDS_DIRECTORY_LOCATION);
+                directory.mkdir();
+                
+                writeBannedWordsToFile(filePath, bannedWordList);
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (bufferedWriter != null) {
+                    bufferedWriter.close();
+                }
+            }
+            catch (IOException e) {
+                // NOOP
+            }
+        }
     }
     
     public static List<BannedWord> readBannedWordsFromFile(String filePath) {
         
-        return null;
+        List<BannedWord> bannedWords = new ArrayList<BannedWord>();
+        
+        BufferedReader bufferedReader = null;
+        
+        try {
+            
+            bufferedReader = new BufferedReader(new FileReader(filePath));
+            String currentLine;
+            
+            while ((currentLine = bufferedReader.readLine()) != null) {
+                    
+                BannedWord bannedWord = new BannedWord(currentLine.trim());
+                
+                if (!bannedWords.contains(bannedWord)) {
+                    bannedWords.add(bannedWord);
+                }
+            }
+            
+        }
+        catch (FileNotFoundException e) {
+
+            File directory = new File(Reference.BANNED_WORDS_DIRECTORY_LOCATION);
+            directory.mkdir();
+            
+            try {
+                File file = new File(filePath);
+                file.createNewFile();
+            }
+            catch (IOException e1) {
+                // NOOP
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                }
+                catch (IOException e) {
+                    // NOOP
+                }
+            }
+        }
+        
+        return bannedWords;
     }
     
     public static List<BannedWord> readDefaultBannedWordsFromFile(String resourcePath) {
@@ -32,7 +115,7 @@ public class FileHelper {
         BufferedReader reader = null;
         
         try {
-            inputStream = new FileHelper().getClass().getResourceAsStream(Reference.DEFAULT_BANNEDWORDS_FILE_LOCATION);
+            inputStream = ChitChat.instance.getClass().getResourceAsStream(Reference.DEFAULT_BANNED_WORDS_FILE_LOCATION);
             
             if (inputStream != null) {
                 reader = new BufferedReader(new InputStreamReader(inputStream));

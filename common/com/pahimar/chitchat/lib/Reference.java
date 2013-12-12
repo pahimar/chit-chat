@@ -1,9 +1,12 @@
 package com.pahimar.chitchat.lib;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.pahimar.chitchat.configuration.Settings;
 
 /**
  * ChitChat
@@ -30,10 +33,10 @@ public class Reference {
     public static final int MAX_SECONDS = 86400;
     
     /* Locations of the blacklists */
-    public static final String DEFAULT_BANNEDWORDS_FILE_LOCATION = "/assets/chitchat/bannedwords/default_banned_words.json";
-    //public static final String DEFAULT_BANNEDWORDS_FILE_LOCATION = "/assets/chitchat/bannedwords/default.properties";
-    public static final String SIMPLE_BANNEDWORDS_FILE_LOCATION = "simple_banned_words.txt";
-    public static final String ADVANCED_BANNEDWORDS_FILE_LOCATION = "advanced_banned_words.json";
+    public static final String DEFAULT_BANNED_WORDS_FILE_LOCATION = "/assets/chitchat/bannedwords/default_banned_words.json";
+    public static final String BANNED_WORDS_DIRECTORY_LOCATION = Settings.CONFIG_DIRECTORY_PATH + "bannedWords" + File.separator;
+    public static final String SIMPLE_BANNED_WORDS_FILE_LOCATION = BANNED_WORDS_DIRECTORY_LOCATION + "simple_banned_words.txt";
+    public static final String ADVANCED_BANNED_WORDS_FILE_LOCATION = BANNED_WORDS_DIRECTORY_LOCATION + "advanced_banned_words.json";
     
     /* Vanilla Minecraft Chat related constants */
     public static final String CHAT_TEXT_MESSAGE_TYPE = "chat.type.text";

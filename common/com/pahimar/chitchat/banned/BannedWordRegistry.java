@@ -1,6 +1,7 @@
 package com.pahimar.chitchat.banned;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -8,7 +9,6 @@ import com.pahimar.chitchat.ChitChat;
 import com.pahimar.chitchat.configuration.Settings;
 import com.pahimar.chitchat.helper.FileHelper;
 import com.pahimar.chitchat.helper.JsonFileHelper;
-import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
 
 /**
@@ -25,23 +25,46 @@ public class BannedWordRegistry {
     private static BannedWordRegistry bannedWordRegistry = null;
     
     private static List<BannedWord> bannedWordList;
+    private static List<BannedWord> customBannedWordList;
     
     private BannedWordRegistry() {
         
         bannedWordList = new ArrayList<BannedWord>();
+        customBannedWordList = new ArrayList<BannedWord>();
         
         // If the default banned word list is enabled, load it
         if (Settings.DEFAULT_BAN_LIST_ENABLED) {
             
-            List<BannedWord> defaultBannedWords = JsonFileHelper.readBannedWordsFromFile(ChitChat.instance.getClass().getResourceAsStream(Reference.DEFAULT_BANNEDWORDS_FILE_LOCATION));
+            List<BannedWord> defaultBannedWords = JsonFileHelper.readBannedWordsFromFile(ChitChat.instance.getClass().getResourceAsStream(Reference.DEFAULT_BANNED_WORDS_FILE_LOCATION));
             
             for (BannedWord bannedWord : defaultBannedWords) {
                 bannedWordList.add(bannedWord);
             }
         }
         
-        // TODO Load simple banned word file
-        // TODO Load advanced banned word file
+        // Load simple banned word file
+        List<BannedWord> simpleBannedWords = FileHelper.readBannedWordsFromFile(Reference.SIMPLE_BANNED_WORDS_FILE_LOCATION);
+        for (BannedWord bannedWord : simpleBannedWords) {
+            if (!customBannedWordList.contains(bannedWord)) {
+                customBannedWordList.add(bannedWord);
+            }
+        }
+        
+        // Load advanced banned word file
+        List<BannedWord> advancedBannedWords = JsonFileHelper.readBannedWordsFromFile(Reference.ADVANCED_BANNED_WORDS_FILE_LOCATION);
+        for (BannedWord bannedWord : advancedBannedWords) {
+            if (!customBannedWordList.contains(bannedWord)) {
+                customBannedWordList.add(bannedWord);
+            }
+        }
+        
+        // Merge in custom banned words
+        for (BannedWord bannedWord : customBannedWordList) {
+            if (!bannedWordList.contains(bannedWord)) {
+                bannedWordList.add(bannedWord);
+            }
+        }
+        Collections.sort(bannedWordList);
     }
     
     public static BannedWordRegistry getInstance() {
@@ -53,19 +76,34 @@ public class BannedWordRegistry {
         return bannedWordRegistry;
     }
     
-    
     public List<BannedWord> getBannedWordList() {
         
         return ImmutableList.copyOf(bannedWordList);
     }
     
-    private static List<BannedWord> readFromSimpleFile() {
+    public List<BannedWord> getCustomBannedWordList() {
         
-        return null;
+        return ImmutableList.copyOf(customBannedWordList);
     }
     
-    private static List<BannedWord> readFromAdvancedFile() {
+    public void addBannedWord(String bannedText) {
         
-        return JsonFileHelper.readBannedWordsFromFile(Settings.CONFIG_DIRECTORY_PATH + "/bannedWords/advanced.json");
+        if (bannedText != null && bannedText.length() > 0) {
+            addBannedWord(new BannedWord(bannedText));
+        }
+    }
+    
+    public void addBannedWord(BannedWord bannedWord) {
+        
+        if (!customBannedWordList.contains(bannedWord)) {
+            customBannedWordList.add(bannedWord);
+        }
+        
+        Collections.sort(bannedWordList);
+    }
+    
+    public void reloadBannedWords() {
+        
+        bannedWordRegistry = new BannedWordRegistry();
     }
 }

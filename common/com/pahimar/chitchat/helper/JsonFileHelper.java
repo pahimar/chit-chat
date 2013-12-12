@@ -1,5 +1,6 @@
 package com.pahimar.chitchat.helper;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,6 +14,7 @@ import java.util.List;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.pahimar.chitchat.banned.BannedWord;
+import com.pahimar.chitchat.lib.Reference;
 
 public class JsonFileHelper {
 
@@ -35,12 +37,23 @@ public class JsonFileHelper {
             }
             jsonWriter.endArray();
         }
+        catch (FileNotFoundException e) {
+            
+            if (filePath.startsWith(Reference.BANNED_WORDS_DIRECTORY_LOCATION)) {
+                File directory = new File(Reference.BANNED_WORDS_DIRECTORY_LOCATION);
+                directory.mkdir();
+                
+                writeBannedWordsToFile(filePath, bannedWordList);
+            }
+        }
         catch (IOException e) {
             e.printStackTrace();
         }
         finally {
             try {
-                jsonWriter.close();
+                if (jsonWriter != null) {
+                    jsonWriter.close();
+                }
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -50,14 +63,20 @@ public class JsonFileHelper {
 
     public static List<BannedWord> readBannedWordsFromFile(String filePath) {
 
+        List<BannedWord> bannedWords = new ArrayList<BannedWord>();
+        
         try {
-            return readBannedWordsFromFile(new FileInputStream(filePath));
+            bannedWords = readBannedWordsFromFile(new FileInputStream(filePath));
         }
         catch (FileNotFoundException e) {
-            e.printStackTrace();
+            
+            File directory = new File(Reference.BANNED_WORDS_DIRECTORY_LOCATION);
+            directory.mkdir();
+            
+            writeBannedWordsToFile(filePath, bannedWords);
         }
         
-        return null;
+        return bannedWords;
     }
     
     public static List<BannedWord> readBannedWordsFromFile(InputStream inputStream) {
@@ -105,7 +124,9 @@ public class JsonFileHelper {
         }
         finally {
             try {
-                jsonReader.close();
+                if (jsonReader != null) {
+                    jsonReader.close();
+                }
             }
             catch (IOException e) {
                 e.printStackTrace();

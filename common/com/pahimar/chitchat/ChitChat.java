@@ -1,11 +1,16 @@
 package com.pahimar.chitchat;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import com.pahimar.chitchat.banned.BannedWord;
 import com.pahimar.chitchat.banned.BannedWordRegistry;
 import com.pahimar.chitchat.chat.ChatListener;
 import com.pahimar.chitchat.configuration.ConfigurationHandler;
 import com.pahimar.chitchat.configuration.Settings;
+import com.pahimar.chitchat.helper.FileHelper;
 import com.pahimar.chitchat.helper.JsonFileHelper;
 import com.pahimar.chitchat.helper.LogHelper;
 import com.pahimar.chitchat.lib.Reference;
@@ -85,12 +90,41 @@ public class ChitChat {
         NetworkRegistry.instance().registerConnectionHandler(new ConnectionHandler());
         
         BannedWordRegistry.getInstance();
+        BannedWordRegistry.getInstance().addBannedWord("this");
+        BannedWordRegistry.getInstance().addBannedWord("is");
+        BannedWordRegistry.getInstance().addBannedWord("a");
+        BannedWordRegistry.getInstance().addBannedWord("test");
+        
+        BannedWordRegistry.getInstance().addBannedWord(new BannedWord("this", false, false));
+        BannedWordRegistry.getInstance().addBannedWord(new BannedWord("is", false, false));
+        BannedWordRegistry.getInstance().addBannedWord(new BannedWord("a", false, false));
+        BannedWordRegistry.getInstance().addBannedWord(new BannedWord("test", false, false));
     }
     
     @EventHandler
     public void serverShutdown(FMLServerStoppedEvent event) {
         
-        // TODO Serialize the custom words to a single file
-        //JsonFileHelper.writeBannedWordsToFile(Settings.CONFIG_DIRECTORY_PATH + "/bannedWords/default_banned_words.json", BannedWordRegistry.getInstance().getBannedWordList());
+        List<BannedWord> customBannedWords = BannedWordRegistry.getInstance().getCustomBannedWordList();
+
+        List<BannedWord> simpleBannedWords = new ArrayList<BannedWord>();
+        List<BannedWord> advancedBannedWords = new ArrayList<BannedWord>();
+        
+        for (BannedWord bannedWord : customBannedWords) {
+            
+            if (bannedWord.isSimple() && !simpleBannedWords.contains(bannedWord)) {
+                simpleBannedWords.add(bannedWord);
+            }
+            else {
+                if (!advancedBannedWords.contains(bannedWord)) {
+                    advancedBannedWords.add(bannedWord);
+                }
+            }
+        }
+        
+        Collections.sort(simpleBannedWords);
+        Collections.sort(advancedBannedWords);
+        
+        FileHelper.writeBannedWordsToFile(Reference.SIMPLE_BANNED_WORDS_FILE_LOCATION, simpleBannedWords);
+        JsonFileHelper.writeBannedWordsToFile(Reference.ADVANCED_BANNED_WORDS_FILE_LOCATION, advancedBannedWords);
     }
 }

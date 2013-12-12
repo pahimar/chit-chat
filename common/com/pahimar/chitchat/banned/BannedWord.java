@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import com.pahimar.chitchat.helper.BannedWordHelper;
 
-public class BannedWord {
+public class BannedWord implements Comparable<BannedWord> {
 
     private String bannedText;
     private boolean mustStartWith;
@@ -62,6 +62,23 @@ public class BannedWord {
         return bannedPattern;
     }
     
+    public boolean isSimple() {
+        
+        return mustStartWith && mustEndWith;
+    }
+    
+    @Override
+    public boolean equals(Object object) {
+        
+        if (object instanceof BannedWord) {
+            BannedWord bannedWord = (BannedWord) object;
+            
+            return (this.bannedText.equalsIgnoreCase(bannedWord.bannedText) && this.mustStartWith == bannedWord.mustStartWith && this.mustEndWith == bannedWord.mustEndWith);
+        }
+        
+        return false;
+    }
+    
     @Override
     public String toString() {
         
@@ -77,5 +94,40 @@ public class BannedWord {
             stringBuilder.append("*");
         }
         return String.format("BannedWord[%s]", stringBuilder.toString());
+    }
+
+    @Override
+    public int compareTo(BannedWord bannedWord) {
+
+        if (bannedWord != null) {
+            if (this.bannedText.equalsIgnoreCase(bannedWord.bannedText)) {
+                if (this.mustStartWith == bannedWord.mustStartWith) {
+                    if (this.mustEndWith == bannedWord.mustEndWith) {
+                        return 0;
+                    }
+                    else {
+                        if (this.mustEndWith == true) {
+                            return -1;
+                        }
+                        else {
+                            return 1;
+                        }
+                    }
+                }
+                else {
+                    if (this.mustStartWith == true) {
+                        return -1;
+                    }
+                    else {
+                        return 1;
+                    }
+                }
+            }
+            else {
+                return this.bannedText.compareToIgnoreCase(bannedWord.bannedText);
+            }
+        }
+
+        return -1;
     }
 }
