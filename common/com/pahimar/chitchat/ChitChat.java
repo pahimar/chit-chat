@@ -90,15 +90,6 @@ public class ChitChat {
         NetworkRegistry.instance().registerConnectionHandler(new ConnectionHandler());
         
         BannedWordRegistry.getInstance();
-        BannedWordRegistry.getInstance().addBannedWord("this");
-        BannedWordRegistry.getInstance().addBannedWord("is");
-        BannedWordRegistry.getInstance().addBannedWord("a");
-        BannedWordRegistry.getInstance().addBannedWord("test");
-        
-        BannedWordRegistry.getInstance().addBannedWord(new BannedWord("this", false, false));
-        BannedWordRegistry.getInstance().addBannedWord(new BannedWord("is", false, false));
-        BannedWordRegistry.getInstance().addBannedWord(new BannedWord("a", false, false));
-        BannedWordRegistry.getInstance().addBannedWord(new BannedWord("test", false, false));
     }
     
     @EventHandler
