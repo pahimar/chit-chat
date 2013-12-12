@@ -37,12 +37,7 @@ public class LogHelper {
 
     public static void severe(Object object) {
 
-        if (object != null) {
-            log(Level.SEVERE, object.toString());
-        }
-        else {
-            log(Level.SEVERE, "null");
-        }
+        log(Level.SEVERE, object);
     }
 
     public static void debug(Object object) {
@@ -51,67 +46,37 @@ public class LogHelper {
             log(Level.WARNING, "[DEBUG] " + object.toString());
         }
         else {
-            log(Level.WARNING, "null");
+            log(Level.WARNING, object);
         }
     }
 
     public static void warning(Object object) {
 
-        if (object != null) {
-            log(Level.WARNING, object.toString());
-        }
-        else {
-            log(Level.WARNING, "null");
-        }
+        log(Level.WARNING, object);
     }
 
     public static void info(Object object) {
 
-        if (object != null) {
-            log(Level.INFO, object.toString());
-        }
-        else {
-            log(Level.INFO, "null");
-        }
+        log(Level.INFO, object);
     }
 
     public static void config(Object object) {
 
-        if (object != null) {
-            log(Level.CONFIG, object.toString());
-        }
-        else {
-            log(Level.CONFIG, "null");
-        }
+        log(Level.CONFIG, object);
     }
 
     public static void fine(Object object) {
 
-        if (object != null) {
-            log(Level.FINE, object.toString());
-        }
-        else {
-            log(Level.FINE, "null");
-        }
+        log(Level.FINE, object);
     }
 
     public static void finer(Object object) {
 
-        if (object != null) {
-            log(Level.FINER, object.toString());
-        }
-        else {
-            log(Level.FINER, "null");
-        }
+        log(Level.FINER, object);
     }
 
     public static void finest(Object object) {
 
-        if (object != null) {
-            log(Level.FINEST, object.toString());
-        }
-        else {
-            log(Level.FINEST, "null");
-        }
+        log(Level.FINEST, object);
     }
 }
