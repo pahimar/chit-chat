@@ -280,6 +280,11 @@
         "mustEndWith": true
     },
     {
+        "bannedText": "bøsse",
+        "mustStartWith": true,
+        "mustEndWith": true
+    },
+    {
         "bannedText": "cack",
         "mustStartWith": true,
         "mustEndWith": true
@@ -936,6 +941,16 @@
     },
     {
         "bannedText": "fellatio",
+        "mustStartWith": true,
+        "mustEndWith": true
+    },
+    {
+        "bannedText": "fisse",
+        "mustStartWith": true,
+        "mustEndWith": true
+    },
+    {
+        "bannedText": "fjols",
         "mustStartWith": true,
         "mustEndWith": true
     },
@@ -1965,6 +1980,11 @@
         "mustEndWith": true
     },
     {
+        "bannedText": "pik",
+        "mustStartWith": true,
+        "mustEndWith": true
+    },
+    {
         "bannedText": "pillock",
         "mustStartWith": true,
         "mustEndWith": true
@@ -2236,6 +2256,21 @@
     },
     {
         "bannedText": "rotoplooker",
+        "mustStartWith": true,
+        "mustEndWith": true
+    },
+    {
+        "bannedText": "røv",
+        "mustStartWith": true,
+        "mustEndWith": true
+    },
+    {
+        "bannedText": "røvhul",
+        "mustStartWith": true,
+        "mustEndWith": true
+    },
+    {
+        "bannedText": "røven",
         "mustStartWith": true,
         "mustEndWith": true
     },
@@ -2716,6 +2751,16 @@
     },
     {
         "bannedText": "throbbing membraine",
+        "mustStartWith": true,
+        "mustEndWith": true
+    },
+    {
+        "bannedText": "tissekone",
+        "mustStartWith": true,
+        "mustEndWith": true
+    },
+    {
+        "bannedText": "tissemand",
         "mustStartWith": true,
         "mustEndWith": true
     },
