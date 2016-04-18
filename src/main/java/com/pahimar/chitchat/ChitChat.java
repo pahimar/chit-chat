@@ -4,23 +4,21 @@ import com.pahimar.chitchat.command.CommandHandler;
 import com.pahimar.chitchat.proxy.IProxy;
 import com.pahimar.chitchat.reference.Messages;
 import com.pahimar.chitchat.reference.Reference;
-import com.pahimar.chitchat.util.LogHelper;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
+import com.pahimar.chitchat.util.helper.LogHelper;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.*;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, certificateFingerprint = Reference.FINGERPRINT, version = Reference.VERSION)
 public class ChitChat
 {
-    @Instance(com.pahimar.chitchat.reference.Reference.MOD_ID)
+    @Mod.Instance(com.pahimar.chitchat.reference.Reference.MOD_ID)
     public static ChitChat instance;
 
     @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
     public static IProxy proxy;
 
-    @EventHandler
+    @Mod.EventHandler
     public void invalidFingerprint(FMLFingerprintViolationEvent event)
     {
         if (Reference.FINGERPRINT.equals("@FINGERPRINT@"))
@@ -33,26 +31,26 @@ public class ChitChat
         }
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event)
     {
         CommandHandler.initCommands(event);
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event)
     {
         // TODO: Load in configuration and registries from disk
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void onInit(FMLInitializationEvent event)
     {
         // Register the Items Event Handler
         proxy.registerEventHandlers();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void onServerStopping(FMLServerStoppingEvent event)
     {
         // TODO: Serialize the contents of the registries to disk

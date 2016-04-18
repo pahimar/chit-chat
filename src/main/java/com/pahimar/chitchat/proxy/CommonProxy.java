@@ -1,5 +1,9 @@
 package com.pahimar.chitchat.proxy;
 
-public abstract class CommonProxy implements IProxy
-{
+public class CommonProxy implements IProxy {
+
+    @Override
+    public void registerEventHandlers() {
+
+    }
 }

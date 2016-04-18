@@ -1,7 +1,6 @@
 package com.pahimar.chitchat.util;
 
 import com.pahimar.chitchat.ChitChat;
-import com.pahimar.chitchat.banned.BannedWord;
 import com.pahimar.chitchat.reference.Reference;
 
 import java.io.*;

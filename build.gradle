@@ -1,9 +1,16 @@
+// For those who want the bleeding edge
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            // Required for the curseforge task
+            name = "gradle"
+            url "https://plugins.gradle.org/m2/"
         }
         maven {
             name = "sonatype"
@@ -11,53 +18,62 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.5" // Required for the curseforge task
     }
 }
 
-apply plugin: 'forge'
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.matthewprenger.cursegradle' // Required for the curseforge task
 
-ext.configFile = file "build.properties"
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
-configFile.withReader {
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
-}
-
-version = config.mod_version
-group = "com.pahimar.chitchat" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "ChitChat"
+version = "${minecraft_version}-${mod_version}.${System.getenv("BUILD_NUMBER") ?: 0}"
+group = mod_group
+archivesBaseName = mod_artifact_basename
 
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
+    version = minecraft_version + "-" + forge_version
+    runDir = "run"
 
+    // Set mod version in code prior to compilation
     replaceIn "reference/Reference.java"
-    replace "@VERSION@", "${config.mod_version}.${System.getenv("BUILD_NUMBER") ?: 0}"
-    if (project.hasProperty("chitchat_signature")) {
-        replace "@FINGERPRINT@", project.chitchat_signature
+    replace "@MOD_VERSION@", "${mod_version}.${System.getenv("BUILD_NUMBER") ?: 0}"
+
+    // Set the jar signature in code prior to compilation, if it exists as a build property
+    if (project.hasProperty("chitchat_sha1_signature")) {
+        replace "@FINGERPRINT@", project.chitchat_sha1_signature
     }
+
+    // Specify the mcp mappings to use
+    mappings = mcp_mappings_version
 }
 
-version = "${config.minecraft_version}-${config.mod_version}.${System.getenv("BUILD_NUMBER") ?: 0}"
+processResources
+        {
+            // this will ensure that this task is redone when the versions change.
+            inputs.property "version", project.version
+            inputs.property "mcversion", project.minecraft.version
 
-processResources {
-    // exclude xcf files, as they are for development only
-    exclude '**/*.xcf'
+            // exclude xcf files, as they are for development only
+            exclude '**/*.xcf'
 
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include '*.info'
+            // replace stuff in mcmod.info, nothing else
+            from(sourceSets.main.resources.srcDirs) {
+                include 'mcmod.info'
 
-        // replace version and mcversion
-        expand 'mod_version': project.version, 'minecraft_version': project.config.minecraft_version
-    }
+                // replace version and mcversion
+                expand 'version': project.version, 'mcversion': project.minecraft.version
+            }
 
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.info'
-    }
-}
+            // copy everything else, thats not the mcmod.info
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+            }
+        }
 
 task devJar(type: Jar, dependsOn: 'classes') {
     from(sourceSets.main.output) {
@@ -72,63 +88,98 @@ artifacts {
     archives devJar
 }
 
-import net.minecraftforge.gradle.delayed.*
-import net.minecraftforge.gradle.tasks.dev.ChangelogTask
-
-task createChangelog(type: ChangelogTask) {
-
-    if (("${System.getenv().JOB_NAME}" != null) && project.hasProperty("jenkins_server") && project.hasProperty("jenkins_password")) {
-        def jobName = "${System.getenv().JOB_NAME}"
-        def buildNumber = "${System.getenv().BUILD_NUMBER}"
-
-        setServerRoot(new DelayedString(project, project.jenkins_server))
-        setJobName(new DelayedString(project, jobName.toString()))
-        setAuthName(new DelayedString(project, project.jenkins_user))
-        setAuthPassword(new DelayedString(project, project.jenkins_password))
-        setTargetBuild({ buildNumber.toString() });
-        setOutput(new DelayedFile(project, 'build/libs/' + project.archivesBaseName + '-' + project.version + '-changelog.txt'));
-    }
-
+task createChangelog(type: JenkinsChangelog) {
     onlyIf {
         return (("${System.getenv().JOB_NAME}" != null) && project.hasProperty("jenkins_server") && project.hasProperty("jenkins_password"))
     }
+
+    outputs.upToDateWhen { false } // never up to date
+    serverRoot = project.hasProperty('jenkins_server') ? project.getProperty('jenkins_server') : "";
+    jobName = System.env['JOB_NAME'] ?: ""
+    targetBuild = System.env['BUILD_NUMBER'] ?: 0;
+    authName = project.hasProperty('jenkins_user') ? project.getProperty('jenkins_user') : "";
+    authPassword = project.hasProperty('jenkins_password') ? project.getProperty('jenkins_password') : "";
+    output = "build/libs/${project.archivesBaseName}-${project.version}-changelog.txt"
 }
 
-tasks.build.dependsOn('createChangelog')
-tasks.build.dependsOn('signJar')
-
-if (!project.hasProperty("keystore_location")) // keystore stuff
-    ext.keystore_location = "."
-if (!project.hasProperty("keystore_password")) // keystore stuff
-    ext.keystore_password = ""
-if (!project.hasProperty("chitchat_keystore_alias")) // keystore stuff
-    ext.chitchat_keystore_alias = ""
-
-task signJar(dependsOn: ["reobf", "devJar"]) {
-    inputs.dir jar.destinationDir
-    inputs.file keystore_location
-    inputs.property "chitchat_keystore_alias", chitchat_keystore_alias
-    inputs.property "keystore_password", keystore_password
-    outputs.dir devJar.destinationDir
-
-    // only sign if the keystore exists
+task signJar(type: SignJar, dependsOn: ["jar", "devJar"]) {
     onlyIf {
-        return keystore_location != "." && keystore_password != ""
+        project.hasProperty('keystore_location')
     }
-    // the actual action.. sign the jar.
-    doLast {
-        jar.destinationDir.eachFile { file ->
-            if (!file.getPath().endsWith(".jar"))
-                return; // skip non-jars
 
-            logger.lifecycle "signing $file"
-            ant.signjar(
-                    destDir: file.getParentFile(), // same place it came from
-                    jar: file,
-                    keystore: keystore_location,
-                    alias: chitchat_keystore_alias,
-                    storepass: keystore_password
-            )
+    keyStore = project.hasProperty('keystore_location') ? project.getProperty('keystore_location') : "";
+    storePass = project.hasProperty('keystore_password') ? project.getProperty('keystore_password') : "";
+    alias = project.hasProperty('chitchat_keystore_alias') ? project.getProperty('chitchat_keystore_alias') : "";
+    keyPass = project.hasProperty('keystore_password') ? project.getProperty('keystore_password') : "";
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+}
+
+uploadArchives.dependsOn signJar
+build.dependsOn signJar
+
+curseforge {
+    apiKey = project.hasProperty('chitchat_curseforge_apikey') ? project.chitchat_curseforge_apikey : ''
+    project {
+        id = project.hasProperty('chitchat_curseforge_projectid') ? project.chitchat_curseforge_projectid : '0'
+        releaseType = mod_release_type
+        changelogType = 'text'
+        changelog = file("build/libs/${project.archivesBaseName}-${project.version}-changelog.txt")
+        addArtifact devJar
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            if (project.hasProperty("forgemaven_url")) {
+                logger.info('Publishing to files server')
+                repository(url: project.forgemaven_url) {
+                    authentication(userName: project.forgemaven_username, password: project.forgemaven_password)
+                }
+            }
+
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = project.archivesBaseName
+            }
+
+            pom.project {
+                name project.archivesBaseName
+                packaging 'jar'
+                description 'Chit Chat'
+                url 'https://github.com/pahimar/ChitChat'
+
+                scm {
+                    url 'https://github.com/pahimar/ChitChat'
+                    connection 'scm:git:git://github.com/pahimar/ChitChat.git'
+                    developerConnection 'scm:git:git@github.com/pahimar/ChitChat.git'
+                }
+
+                issueManagement {
+                    system 'github'
+                    url 'https://github.com/pahimar/ChitChat/issues'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'https://raw.githubusercontent.com/pahimar/ChitChat/master/LICENSE'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'Pahimar'
+                        name 'Pahimar'
+                        roles {
+                            role 'developer'
+                        }
+                    }
+                }
+            }
         }
     }
 }
