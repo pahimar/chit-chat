@@ -4,7 +4,9 @@ import net.minecraftforge.fml.common.event.*;
 
 public interface IProxy {
 
-    ClientProxy getClientProxy();
+    default ClientProxy getClientProxy() {
+        return null;
+    }
 
     void onServerStarting(FMLServerStartingEvent event);
 

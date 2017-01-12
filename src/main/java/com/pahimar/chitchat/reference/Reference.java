@@ -7,14 +7,6 @@ import java.util.Map;
 
 public class Reference {
 
-    /* General @Mod related constants */
-    public static final String MOD_ID = "ChitChat";
-    public static final String MOD_NAME = "ChitChat";
-    public static final String FINGERPRINT = "@FINGERPRINT@";
-    public static final String VERSION = "@VERSION@";
-    public static final String SERVER_PROXY_CLASS = "com.pahimar.chitchat.proxy.ServerProxy";
-    public static final String CLIENT_PROXY_CLASS = "com.pahimar.chitchat.proxy.ClientProxy";
-
     /* Equivalent character map for common character substitutions */
     private static Map<String, List<String>> equivalentCharacterMap;
 

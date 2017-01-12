@@ -1,16 +1,17 @@
 [
 {
-  "modid": "ChitChat",
+  "modid": "chitchat",
   "name": "Chit Chat",
-  "description": "",
-  "version": "@VERSION@",
-  "url": "",
-  "updateUrl": "",
+  "description": "Provides chat filters to help ensure language you don't want to appear, doesn't!",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://chitchat.pahimar.com/",
+  "updateUrl": "http://chitchat.pahimar.com/update/versions.json",
   "authorList": [
     "pahimar"
   ],
-  "credits": "",
-  "logoFile": "/assets/chitchat/textures/logo/logo.png",
+  "credits": "My Patrons!",
+  "logoFile": "",
   "screenshots": [
   ],
   "parent":"",

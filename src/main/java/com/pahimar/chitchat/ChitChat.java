@@ -2,25 +2,32 @@ package com.pahimar.chitchat;
 
 import com.pahimar.chitchat.proxy.IProxy;
 import com.pahimar.chitchat.reference.Messages;
-import com.pahimar.chitchat.reference.Reference;
 import com.pahimar.chitchat.util.helper.LogHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, certificateFingerprint = Reference.FINGERPRINT, version = Reference.VERSION)
+@Mod(modid = ChitChat.MOD_ID,
+        name = "Chit Chat",
+        certificateFingerprint = ChitChat.FINGERPRINT,
+        version = "@MOD_VERSION@",
+        guiFactory = "com.pahimar.chitchat.client.gui.GuiFactory",
+        updateJSON = "http://chitchat.pahimar.com/update/versions.json")
 public class ChitChat {
 
-    @Mod.Instance(Reference.MOD_ID)
+    public static final String MOD_ID = "chitchat";
+    static final String FINGERPRINT = "@FINGERPRINT@";
+
+    @Mod.Instance(ChitChat.MOD_ID)
     public static ChitChat instance;
 
-    @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
+    @SidedProxy(clientSide = "com.pahimar.chitchat.proxy.ClientProxy", serverSide = "com.pahimar.chitchat.proxy.ServerProxy")
     public static IProxy proxy;
 
     @Mod.EventHandler
     public void onInvalidFingerprint(FMLFingerprintViolationEvent event) {
 
-        if (Reference.FINGERPRINT.equals("@FINGERPRINT@")) {
+        if (FINGERPRINT.equals("@FINGERPRINT@")) {
             LogHelper.info(Messages.NO_FINGERPRINT_MESSAGE);
         }
         else {

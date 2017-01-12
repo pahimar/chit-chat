@@ -1,3 +1,7 @@
+import groovy.json.JsonException
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 // For those who want the bleeding edge
 buildscript {
     repositories {
@@ -18,8 +22,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.5" // Required for the curseforge task
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.7" // Required for the curseforge task
+        classpath "se.bjurr.gitchangelog:git-changelog-gradle-plugin:1.32"
     }
 }
 
@@ -27,6 +32,8 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.matthewprenger.cursegradle' // Required for the curseforge task
+apply plugin: 'se.bjurr.gitchangelog.git-changelog-gradle-plugin'
+
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -39,8 +46,10 @@ minecraft {
     version = minecraft_version + "-" + forge_version
     runDir = "run"
 
+    useDepAts = true // Required for JEI
+
     // Set mod version in code prior to compilation
-    replaceIn "reference/Reference.java"
+    replaceIn "ChitChat.java"
     replace "@MOD_VERSION@", "${mod_version}.${System.getenv("BUILD_NUMBER") ?: 0}"
 
     // Set the jar signature in code prior to compilation, if it exists as a build property
@@ -52,28 +61,27 @@ minecraft {
     mappings = mcp_mappings_version
 }
 
-processResources
-        {
-            // this will ensure that this task is redone when the versions change.
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
 
-            // exclude xcf files, as they are for development only
-            exclude '**/*.xcf'
+    // exclude xcf files, as they are for development only
+    exclude '**/*.xcf'
 
-            // replace stuff in mcmod.info, nothing else
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
 
-                // replace version and mcversion
-                expand 'version': project.version, 'mcversion': project.minecraft.version
-            }
+        // replace version and mcversion
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
 
-            // copy everything else, thats not the mcmod.info
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
 
 task devJar(type: Jar, dependsOn: 'classes') {
     from(sourceSets.main.output) {
@@ -86,20 +94,6 @@ task devJar(type: Jar, dependsOn: 'classes') {
 
 artifacts {
     archives devJar
-}
-
-task createChangelog(type: JenkinsChangelog) {
-    onlyIf {
-        return (("${System.getenv().JOB_NAME}" != null) && project.hasProperty("jenkins_server") && project.hasProperty("jenkins_password"))
-    }
-
-    outputs.upToDateWhen { false } // never up to date
-    serverRoot = project.hasProperty('jenkins_server') ? project.getProperty('jenkins_server') : "";
-    jobName = System.env['JOB_NAME'] ?: ""
-    targetBuild = System.env['BUILD_NUMBER'] ?: 0;
-    authName = project.hasProperty('jenkins_user') ? project.getProperty('jenkins_user') : "";
-    authPassword = project.hasProperty('jenkins_password') ? project.getProperty('jenkins_password') : "";
-    output = "build/libs/${project.archivesBaseName}-${project.version}-changelog.txt"
 }
 
 task signJar(type: SignJar, dependsOn: ["jar", "devJar"]) {
@@ -115,8 +109,100 @@ task signJar(type: SignJar, dependsOn: ["jar", "devJar"]) {
     outputFile = jar.archivePath
 }
 
-uploadArchives.dependsOn signJar
-build.dependsOn signJar
+/**
+ *  Build the json file that MinecraftForge's Update Checker will use to check for new versions
+ *
+ *  MinecraftForge Update Checker documentation - http://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
+ */
+task buildVersionFile {
+
+    def minecraftVersion = "${minecraft_version}"
+    def modVersion = "${mod_version}.${System.getenv("BUILD_NUMBER") ?: 0}"
+    def isReleaseVersion = project.hasProperty("mod_release_type") && project.property("mod_release_type") == "release"
+    def fileName = "versions.json"
+    def remoteUrl = "http://chitchat.pahimar.com/"
+    def changelogStatement = "Changelog available at " + remoteUrl + minecraftVersion + "/${project.archivesBaseName}-${project.version}-changelog.txt"
+    def localUpdateJson = new HashMap()
+
+    // Grab the remote file so that we can append new entries to it
+    try {
+        def remoteUpdateJson = new JsonSlurper().parse(new URL(remoteUrl + 'update/' + fileName))
+
+        if (remoteUpdateJson instanceof Map) {
+            localUpdateJson.putAll(remoteUpdateJson)
+        }
+    }
+    catch (JsonException e) {}
+
+    // Set homepage
+    localUpdateJson.put("homepage", remoteUrl)
+
+    // Add new mod version to the list of mod versions for this version of Minecraft
+    if (localUpdateJson.get(minecraftVersion) instanceof Map) {
+        ((Map) localUpdateJson.get(minecraftVersion)).put(modVersion, changelogStatement)
+    }
+    else {
+        def modVersionsMap = new HashMap()
+        modVersionsMap.put(modVersion, changelogStatement)
+        localUpdateJson.put(minecraftVersion, modVersionsMap)
+    }
+
+    // Add new versions to the promos list
+    if (localUpdateJson.get("promos") instanceof Map) {
+        ((Map) localUpdateJson.get("promos")).put("latest", modVersion)
+        ((Map) localUpdateJson.get("promos")).put(minecraftVersion + "-latest", modVersion)
+
+        if (isReleaseVersion) {
+            ((Map) localUpdateJson.get("promos")).put("recommended", modVersion)
+            ((Map) localUpdateJson.get("promos")).put(minecraftVersion + "-recommended", modVersion)
+        }
+    }
+    else {
+        def promosMap = new HashMap<String, String>()
+
+        promosMap.put("latest", modVersion)
+        promosMap.put(minecraftVersion + "-latest", modVersion)
+
+        if (isReleaseVersion) {
+            promosMap.put("recommended", modVersion)
+            promosMap.put(minecraftVersion + "-recommended", modVersion)
+        }
+
+        localUpdateJson.put("promos", promosMap)
+    }
+
+    // Output new versions file
+    def localUpdateFile = new File(fileName)
+    if (!localUpdateFile.exists()) {
+        localUpdateFile.createNewFile()
+    }
+    localUpdateFile.setText(JsonOutput.prettyPrint(JsonOutput.toJson(localUpdateJson)))
+}
+
+/**
+ * Generate a changelog file from GitHub commits
+ *
+ * See: https://github.com/tomasbjerre/git-changelog-gradle-plugin
+ */
+task makeChangelog(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
+    filePath = "changelog.html"
+    untaggedName = "Current release ${mod_version}"
+    templateContent = """
+<h1>Changelog for ChitChat</h1>
+<h2>Version ${mod_version} for Minecraft ${project.minecraft.version}</h2>
+<ul>
+{{#tags}}
+<li><h3>{{name}}</h3>
+<hr/>
+<ul>
+{{#commits}}
+<li>{{{message}}}</li>
+{{/commits}}
+</ul>
+{{/tags}}
+</ul>
+    """
+}
 
 curseforge {
     apiKey = project.hasProperty('chitchat_curseforge_apikey') ? project.chitchat_curseforge_apikey : ''

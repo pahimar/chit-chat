@@ -1,40 +1,55 @@
 package com.pahimar.chitchat.configuration;
 
-import com.pahimar.chitchat.reference.Reference;
-import com.pahimar.chitchat.util.helper.LogHelper;
+import com.pahimar.chitchat.ChitChat;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 
-public class ConfigurationHandler
-{
+public class ConfigurationHandler {
 
-    private static Configuration configuration;
+    public static Configuration configuration;
 
-    public static void init(String configPath) {
+    private static final String CATEGORY_DEBUG = "general.debug";
 
-        configuration = new Configuration(new File(configPath + "general.properties"));
+    public static void init(File configFile) {
 
-        try {
-            configuration.load();
+        if (configuration == null) {
+            configuration = new Configuration(configFile, true);
+            loadConfiguration();
         }
-        catch (Exception e) {
-            LogHelper.getLogger().error(LogHelper.MOD_MARKER, Reference.MOD_NAME + " has had a problem loading its general configuration", e);
-        }
-        finally
-        {
+    }
+
+    private static void loadConfiguration() {
+
+        Settings.debugEnabled = configuration.getBoolean(
+                Settings.DEBUG_ENABLED_NAME,
+                CATEGORY_DEBUG,
+                Settings.DEBUG_ENABLED_DEFAULT,
+                I18n.translateToLocal(Settings.DEBUG_ENABLED_COMMENT),
+                Settings.DEBUG_ENABLED_LABEL);
+
+        if (configuration.hasChanged()) {
             configuration.save();
         }
     }
 
-    public static void set(String categoryName, String propertyName, String newValue) {
+    @SubscribeEvent
+    public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
 
-        configuration.load();
-        if (configuration.getCategoryNames().contains(categoryName)) {
-            if (configuration.getCategory(categoryName).containsKey(propertyName)) {
-                configuration.getCategory(categoryName).get(propertyName).set(newValue);
-            }
+        if (event.getModID().equalsIgnoreCase(ChitChat.MOD_ID)) {
+            loadConfiguration();
         }
-        configuration.save();
+    }
+
+    public static class Settings {
+
+        public static boolean debugEnabled;
+        private static final String DEBUG_ENABLED_NAME = "enabled";
+        private static final String DEBUG_ENABLED_LABEL = "debug.enabled.label";
+        private static final String DEBUG_ENABLED_COMMENT = "debug.enabled.comment";
+        private static final boolean DEBUG_ENABLED_DEFAULT = false;
     }
 }
